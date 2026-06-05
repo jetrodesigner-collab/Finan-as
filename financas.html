@@ -780,10 +780,18 @@ body.theme-gradient .login-screen {
     <div class="login-logo">💰</div>
     <div class="login-title">Minhas <span>Finanças</span></div>
     <div class="login-sub">Seus dados salvos na nuvem, acessíveis em qualquer celular</div>
-    <button class="btn-google" onclick="loginGoogle()">
-      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
-      Entrar com Google
-    </button>
+    
+    <div id="loginForm" style="width:100%;max-width:320px;display:flex;flex-direction:column;gap:10px">
+      <input type="email" id="authEmail" placeholder="Seu email" style="width:100%;text-align:center" />
+      <input type="password" id="authPassword" placeholder="Sua senha" style="width:100%;text-align:center" />
+      <button class="btn-google" onclick="loginEmail()" style="background:var(--accent);color:#000;font-family:Inter,sans-serif;font-weight:700;border-radius:14px;padding:15px;border:none;cursor:pointer;font-size:1rem">
+        Entrar
+      </button>
+      <button onclick="toggleRegister()" style="background:none;border:none;color:var(--muted);font-size:0.85rem;cursor:pointer;text-decoration:underline" id="toggleBtn">
+        Não tem conta? Cadastrar
+      </button>
+      <div id="authMsg" style="font-size:0.8rem;text-align:center;color:var(--red);display:none"></div>
+    </div>
     <div class="login-note">Seus dados ficam protegidos e privados</div>
   </div>
 </div>
@@ -1225,19 +1233,41 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let currentUser = null;
 
-async function loginGoogle() {
-  const { error } = await sb.auth.signInWithOAuth({
-    provider: 'google',
-    options: {
-      redirectTo: 'https://jetrodesigner-collab.github.io/Finan-as/financas.html',
-      queryParams: {
-        access_type: 'offline',
-        prompt: 'consent',
-      },
-      skipBrowserRedirect: false
-    }
-  });
-  if (error) alert('Erro ao fazer login: ' + error.message);
+let isRegisterMode = false;
+
+function toggleRegister() {
+  isRegisterMode = !isRegisterMode;
+  document.getElementById('toggleBtn').textContent = isRegisterMode ? 'Já tem conta? Entrar' : 'Não tem conta? Cadastrar';
+  document.querySelector('#loginForm .btn-google, #loginForm button[onclick="loginEmail()"]') ;
+  const btn = document.querySelector('#loginForm button[onclick="loginEmail()"]');
+  if(btn) btn.textContent = isRegisterMode ? 'Cadastrar' : 'Entrar';
+  document.getElementById('authMsg').style.display = 'none';
+}
+
+function showAuthMsg(msg, color) {
+  const el = document.getElementById('authMsg');
+  el.textContent = msg;
+  el.style.color = color || 'var(--red)';
+  el.style.display = 'block';
+}
+
+async function loginEmail() {
+  const email = document.getElementById('authEmail').value.trim();
+  const password = document.getElementById('authPassword').value;
+  if (!email || !password) { showAuthMsg('Preencha email e senha!'); return; }
+  if (password.length < 6) { showAuthMsg('Senha precisa ter pelo menos 6 caracteres!'); return; }
+  
+  showAuthMsg('Aguarde...', 'var(--muted)');
+  
+  if (isRegisterMode) {
+    const { data, error } = await sb.auth.signUp({ email, password });
+    if (error) { showAuthMsg(error.message); return; }
+    showAuthMsg('Conta criada! Verifique seu email para confirmar.', 'var(--green)');
+  } else {
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) { showAuthMsg('Email ou senha incorretos!'); return; }
+    if (data?.user) await setUserSession(data.user);
+  }
 }
 
 async function logout() {
