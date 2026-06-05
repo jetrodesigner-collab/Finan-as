@@ -27,17 +27,17 @@
   --header-bg: rgba(10,10,10,0.92);
 }
 body.theme-bege {
-  --bg: #f0ebe0;
-  --surface: #faf7f2;
-  --surface2: #ede8dc;
-  --border: #d8d0c0;
-  --text: #2a2218;
-  --text2: #4a3f30;
-  --muted: #8a7f6e;
-  --green: #2d7a4a;
-  --red: #c0392b;
-  --accent: #b8860b;
-  --header-bg: rgba(240,235,224,0.92);
+  --bg: #f8f4ee;
+  --surface: #ffffff;
+  --surface2: #f2ede6;
+  --border: #e0d8cc;
+  --text: #1a1008;
+  --text2: #1a1008;
+  --muted: #3a2a10;
+  --green: #1a6b35;
+  --red: #b52a1c;
+  --accent: #9a6a00;
+  --header-bg: rgba(248,244,238,0.95);
 }
 body.theme-gradient {
   --bg: transparent;
@@ -253,6 +253,22 @@ header {
   height: 3px;
 }
 .pcard.gastos .pcard-bar { background: var(--red); }
+
+.preview-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 0 22px 22px;
+}
+.preview-cards-row2 {
+  padding: 0 22px 22px;
+  margin-top: -10px;
+}
+.pcard.previsto .pcard-bar { background: var(--accent); }
+.pcard.previsto .pcard-title { color: var(--accent); }
+.pcard.previsto .pcard-dot { background: var(--accent); }
+.pcard.previsto .pcard-val { color: var(--accent); }
+
 .pcard.ganhos .pcard-bar { background: var(--green); }
 .pcard-title {
   font-size: 0.72rem;
@@ -317,6 +333,7 @@ header {
 }
 .type-toggle button.act-inc { background: rgba(74,222,128,0.1); border-color: var(--green); color: var(--green); }
 .type-toggle button.act-exp { background: rgba(248,113,113,0.1); border-color: var(--red); color: var(--red); }
+.type-toggle button.act-plan { background: rgba(250,204,21,0.1); border-color: var(--accent); color: var(--accent); }
 .irow { display: flex; gap: 8px; }
 input, select {
   background: var(--surface);
@@ -332,7 +349,25 @@ input, select {
   transition: border-color 0.15s;
 }
 input:focus { border-color: var(--accent); }
-input::placeholder { color: var(--muted); }
+input::placeholder { color: rgba(230,230,230,0.5); }
+body.theme-bege input::placeholder { color: rgba(30,20,10,0.5); }
+body.theme-bege .date-lbl { color: rgba(30,20,10,0.5) !important; }
+body.theme-bege .btn-add { color: #ffffff !important; }
+body.theme-bege input { color: #1a1410; }
+body.theme-bege input[type="date"]::-webkit-datetime-edit { color: rgba(30,20,10,0.5); }
+body.theme-bege input[type="date"]::-webkit-datetime-edit-month-field,
+body.theme-bege input[type="date"]::-webkit-datetime-edit-day-field,
+body.theme-bege input[type="date"]::-webkit-datetime-edit-year-field { color: rgba(30,20,10,0.5); }
+body.theme-bege input[type="date"]:valid { color: #1a1410; }
+body.theme-bege input[type="date"]::-webkit-calendar-picker-indicator { filter: none; opacity: 0.5; }
+input[type="date"] { color: rgba(230,230,230,0.5); position:relative; }
+input[type="date"]:valid { color: rgba(230,230,230,0.9); }
+input[type="date"]::-webkit-datetime-edit { color: rgba(230,230,230,0.5); }
+input[type="date"]::-webkit-datetime-edit-text { color: rgba(230,230,230,0.5); }
+input[type="date"]::-webkit-datetime-edit-month-field { color: rgba(230,230,230,0.5); }
+input[type="date"]::-webkit-datetime-edit-day-field { color: rgba(230,230,230,0.5); }
+input[type="date"]::-webkit-datetime-edit-year-field { color: rgba(230,230,230,0.5); }
+input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) opacity(0.5); }
 .btn-add {
   background: var(--accent);
   color: #000;
@@ -529,6 +564,8 @@ input::placeholder { color: var(--muted); }
 .modal-item-l { display: flex; align-items: center; gap: 11px; flex: 1; min-width: 0; }
 .modal-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 .modal-dot.r { background: var(--red); }
+.modal-dot.y { background: var(--accent); }
+.modal-item-val.y { color: var(--accent); }
 .modal-dot.g { background: var(--green); }
 .modal-item-info .desc { font-size: 0.92rem; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 170px; }
 .modal-item-info .meta { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
@@ -538,6 +575,7 @@ input::placeholder { color: var(--muted); }
 .modal-item-val.g { color: var(--green); }
 .btn-del-item { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1.2rem; opacity: 0.4; padding: 2px; }
 .btn-del-item:hover { opacity: 1; color: var(--red); }
+.btn-cal { background: rgba(250,204,21,0.15); border: 1px solid var(--accent); border-radius: 8px; color: var(--accent); cursor: pointer; font-size: 0.85rem; padding: 4px 8px; }
 .modal-row { display: flex; gap: 8px; margin-bottom: 10px; }
 .modal-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; max-height: 200px; overflow-y: auto; }
 .modal-fixed-item {
@@ -546,6 +584,63 @@ input::placeholder { color: var(--muted); }
   font-size: 0.9rem; font-weight: 400;
 }
 .modal-fixed-val { color: var(--red); font-weight: 700; }
+
+/* Confirm modal */
+.confirm-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.88);
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  backdrop-filter: blur(6px);
+}
+.confirm-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 28px 24px;
+  width: 100%;
+  max-width: 320px;
+  text-align: center;
+  animation: slideUp 0.2s ease;
+}
+.confirm-box h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.confirm-box p {
+  font-size: 0.88rem;
+  color: var(--muted);
+  margin-bottom: 22px;
+}
+.confirm-btns {
+  display: flex;
+  gap: 10px;
+}
+.confirm-btns button {
+  flex: 1;
+  padding: 13px;
+  border-radius: 12px;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+.btn-confirm-no {
+  background: var(--surface2);
+  color: var(--muted);
+  border: 1px solid var(--border) !important;
+}
+.btn-confirm-yes {
+  background: var(--red);
+  color: #fff;
+}
+
 .btn-close {
   width: 100%; background: var(--surface2); border: 1px solid var(--border);
   border-radius: 12px; color: var(--muted); font-family: 'Inter', sans-serif;
@@ -622,12 +717,23 @@ input::placeholder { color: var(--muted); }
   </div>
 </div>
 
+<div class="preview-cards-row2">
+  <div class="pcard previsto" onclick="openModal('planned')" style="width:100%">
+    <div class="pcard-bar"></div>
+    <div class="pcard-title">Previsto para o mês</div>
+    <div class="pcard-total" id="pcardPlanTotal">R$ 0</div>
+    <div class="pcard-items" id="pcardPlanItems"></div>
+    <div class="pcard-more">ver todos →</div>
+  </div>
+</div>
+
 <div class="divider"></div>
 <div class="sec-label">Lançar</div>
 <div class="add-area">
   <div class="type-toggle">
     <button id="btnInc" onclick="setType('income')" class="act-inc">+ Entrada</button>
     <button id="btnExp" onclick="setType('expense')">− Saída</button>
+    <button id="btnPlan" onclick="setType('planned')">📋 Previsto</button>
   </div>
   <div class="irow">
     <input type="text" id="descInput" placeholder="Descrição (ex: gasolina)" />
@@ -640,6 +746,10 @@ input::placeholder { color: var(--muted); }
       <div class="cat-suggestions" id="catSug"></div>
     </div>
     <button class="btn-add" onclick="addItem()">Adicionar</button>
+  </div>
+  <div id="plannedDateRow" style="display:none;position:relative">
+    <label style="position:absolute;top:50%;left:15px;transform:translateY(-50%);font-size:0.95rem;color:rgba(230,230,230,0.5);pointer-events:none;z-index:1;transition:opacity 0.2s" id="dateLbl" class="date-lbl">📅 Definir data</label>
+    <input type="date" id="plannedDate" style="width:100%;color-scheme:dark;background:transparent" oninput="document.getElementById('dateLbl').style.opacity=this.value?'0':'1'" />
   </div>
 </div>
 
@@ -766,6 +876,8 @@ function setType(t) {
   curType = t;
   document.getElementById('btnInc').className = t==='income' ? 'act-inc' : '';
   document.getElementById('btnExp').className = t==='expense' ? 'act-exp' : '';
+  document.getElementById('btnPlan').className = t==='planned' ? 'act-plan' : '';
+  document.getElementById('plannedDateRow').style.display = t==='planned' ? 'block' : 'none';
 }
 
 function fmt(n) { return 'R$ '+Math.abs(n).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
@@ -789,21 +901,18 @@ function addItem() {
   const cat=document.getElementById('catInput').value.trim();
   if (!desc||isNaN(val)||val<=0) { alert('Preencha descrição e valor!'); return; }
   addCatIfNew(cat);
+  const plannedDate = curType==='planned' ? document.getElementById('plannedDate').value : '';
   const items=getItems();
-  items.unshift({id:Date.now(),type:curType,desc,val,cat,date:new Date().toLocaleDateString('pt-BR')});
+  items.unshift({id:Date.now(),type:curType,desc,val,cat,date:new Date().toLocaleDateString('pt-BR'),plannedDate});
   saveItems(items);
   document.getElementById('descInput').value='';
   document.getElementById('valInput').value='';
   document.getElementById('catInput').value='';
+  document.getElementById('plannedDate').value='';
   render();
 }
-function delItem(id) { if(!confirm("Apagar este lançamento?")) return; saveItems(getItems().filter(i=>i.id!==id)); render(); renderTxModal(); }
-function delMove(id) { 
-  if(!confirm("Apagar este lançamento?")) return; 
-  saveItems(getItems().filter(i=>i.id!==id)); 
-  render();
-  if(document.getElementById('txModal').style.display!=='none') renderTxModal();
-}
+function delItem(id) { askDelete(id, "modal"); }
+function delMove(id) { askDelete(id, "list"); }
 
 function changeMonth(d) {
   vMonth+=d;
@@ -837,12 +946,14 @@ function closeTxOutside(e) { if(e.target.id==='txModal') closeTxModal(); }
 function renderTxModal() {
   const items=getItems().filter(i=>i.type===curTxType);
   const isExp=curTxType==='expense';
+  const isPlan=curTxType==='planned';
   const title=document.getElementById('txModalTitle');
-  title.textContent=(isExp?'Gastos':'Ganhos')+' — '+MONTHS[vMonth].slice(0,3)+' '+vYear;
-  title.className=isExp?'red':'green';
+  title.textContent=(isExp?'Gastos':isPlan?'Previsto para o mês':'Ganhos')+' — '+MONTHS[vMonth].slice(0,3)+' '+vYear;
+  title.className=isExp?'red':isPlan?'accent':'green';
   const list=document.getElementById('txModalList');
   if(!items.length){list.innerHTML='<div class="empty">Nenhum lançamento</div>';return;}
-  list.innerHTML=items.map(i=>`<div class="modal-item"><div class="modal-item-l"><div class="modal-dot ${isExp?'r':'g'}"></div><div class="modal-item-info"><div class="desc">${i.desc}</div><div class="meta">${i.cat||''}${i.cat&&i.date?' · ':''}${i.date||''}</div></div></div><div class="modal-item-r"><span class="modal-item-val ${isExp?'r':'g'}">${isExp?'-':'+'} ${fmt(i.val)}</span><button class="btn-del-item" onclick="delItem(${i.id})">×</button></div></div>`).join('');
+  const dotClass=isExp?'r':isPlan?'y':'g'; const valClass=isExp?'r':isPlan?'y':'g'; const prefix=isExp?'-':isPlan?'':'+';
+list.innerHTML=items.map(i=>`<div class="modal-item"><div class="modal-item-l"><div class="modal-dot ${dotClass}"></div><div class="modal-item-info"><div class="desc">${i.desc}</div><div class="meta">${i.cat||''}${i.cat&&i.date?' · ':''}${i.date||''}${isPlan&&i.plannedDate?' 📅 '+formatDateBR(i.plannedDate):''}</div></div></div><div class="modal-item-r">${isPlan&&i.plannedDate?`<button class="btn-cal" onclick="addToCalendar('${i.desc}',${i.val},'${i.plannedDate}')">📅</button>`:''}<span class="modal-item-val ${valClass}">${prefix} ${fmt(i.val)}</span><button class="btn-del-item" onclick="delItem(${i.id})">×</button></div></div>`).join('');
 }
 
 function openFixedModal() { renderFixedModal(); document.getElementById('fixedModal').style.display='flex'; }
@@ -909,6 +1020,7 @@ function render() {
 
   const expenses=items.filter(i=>i.type==='expense');
   const incomes=items.filter(i=>i.type==='income');
+  const planned=items.filter(i=>i.type==='planned');
   document.getElementById('pcardExpTotal').textContent=fmt(exp);
   document.getElementById('pcardIncTotal').textContent=fmt(inc);
 
@@ -919,6 +1031,11 @@ function render() {
   };
   renderPC(expenses,'pcardExpItems');
   renderPC(incomes,'pcardIncItems');
+  const planTotal=planned.reduce((s,i)=>s+i.val,0);
+  document.getElementById('pcardPlanTotal').textContent=fmt(planTotal);
+  const pcPlan=document.getElementById('pcardPlanItems');
+  if(!planned.length){pcPlan.innerHTML='<div style="font-size:0.78rem;color:var(--muted);padding:4px 0">Nenhum previsto</div>';}
+  else{pcPlan.innerHTML=planned.slice(0,3).map(i=>`<div class="pcard-row"><div class="pcard-dot"></div><span class="pcard-name">${i.desc}</span><span class="pcard-val">${fmtS(i.val)}</span></div>`).join('');}
 
   // Movimentações list
   const ml=document.getElementById('movesList');
@@ -928,6 +1045,48 @@ function render() {
   }
 
   renderFixedTags();
+}
+
+
+let pendingDeleteId = null;
+let pendingDeleteSource = null;
+
+function askDelete(id, source) {
+  pendingDeleteId = id;
+  pendingDeleteSource = source;
+  document.getElementById('confirmOverlay').style.display = 'flex';
+}
+
+function confirmCancel() {
+  pendingDeleteId = null;
+  pendingDeleteSource = null;
+  document.getElementById('confirmOverlay').style.display = 'none';
+}
+
+function confirmDelete() {
+  document.getElementById('confirmOverlay').style.display = 'none';
+  if(pendingDeleteId === null) return;
+  saveItems(getItems().filter(i=>i.id!==pendingDeleteId));
+  render();
+  if(pendingDeleteSource === 'modal') renderTxModal();
+  pendingDeleteId = null;
+  pendingDeleteSource = null;
+}
+
+function formatDateBR(dateStr) {
+  if(!dateStr) return '';
+  const [y,m,d] = dateStr.split('-');
+  return d+'/'+m+'/'+y;
+}
+
+function addToCalendar(desc, val, dateStr) {
+  if(!dateStr) { alert('Sem data definida para este previsto.'); return; }
+  const [y,m,d] = dateStr.split('-');
+  const dateFormatted = y+m+d;
+  const title = encodeURIComponent('💰 ' + desc + ' — R$ ' + val.toFixed(2).replace('.',','));
+  const details = encodeURIComponent('Gasto previsto cadastrado no app Finanças.');
+  const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dateFormatted}/${dateFormatted}&details=${details}`;
+  window.open(url, '_blank');
 }
 
 (function init(){
@@ -941,5 +1100,17 @@ if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); });
 }
 </script>
+
+<!-- MODAL: confirmar exclusão -->
+<div class="confirm-overlay" id="confirmOverlay" style="display:none">
+  <div class="confirm-box">
+    <h3>Apagar lançamento?</h3>
+    <p>Essa ação não pode ser desfeita.</p>
+    <div class="confirm-btns">
+      <button class="btn-confirm-no" onclick="confirmCancel()">Cancelar</button>
+      <button class="btn-confirm-yes" onclick="confirmDelete()">Apagar</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
