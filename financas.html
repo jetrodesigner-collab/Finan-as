@@ -396,6 +396,17 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) opacit
   display: none;
   box-shadow: 0 8px 24px rgba(0,0,0,0.4);
 }
+body.theme-gradient .cat-suggestions {
+  background: #1a1535;
+  border-color: rgba(255,255,255,0.2);
+}
+body.theme-gradient .cat-item {
+  color: #ffffff;
+  border-bottom-color: rgba(255,255,255,0.1);
+}
+body.theme-gradient .cat-item:hover {
+  background: rgba(255,255,255,0.1);
+}
 .cat-suggestions.open { display: block; }
 .cat-item {
   padding: 12px 15px;
@@ -819,7 +830,7 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) opacit
 
 <script>
 const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-const DEF_CATS = ['Alimentação','Transporte','Moradia','Saúde','Lazer','Trabalho','Moto','Combustível','Aluno','Outros'];
+const DEF_CATS = ['Saúde','Alimentação','Lazer','Salário'];
 
 let curType = 'income';
 let now = new Date();
