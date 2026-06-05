@@ -10,6 +10,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Finanças">
 <link rel="apple-touch-icon" href="icone.png">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -652,6 +653,109 @@ body.theme-gradient .cat-item:hover {
   color: #fff;
 }
 
+
+/* LOGIN SCREEN */
+.login-screen {
+  position: fixed; inset: 0;
+  background: var(--bg);
+  z-index: 500;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  gap: 24px;
+}
+body.theme-gradient .login-screen {
+  background: linear-gradient(135deg, #0f0c29 0%, #1a1040 30%, #24243e 60%, #0f2027 100%);
+}
+.login-logo {
+  width: 80px; height: 80px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.5rem;
+}
+.login-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--text);
+  text-align: center;
+}
+.login-title span { color: var(--accent); }
+.login-sub {
+  font-size: 0.9rem;
+  color: var(--muted);
+  text-align: center;
+  opacity: 0.7;
+  max-width: 280px;
+  line-height: 1.5;
+}
+.btn-google {
+  background: #fff;
+  color: #1a1a1a;
+  border: none;
+  border-radius: 14px;
+  padding: 15px 28px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  width: 100%;
+  max-width: 320px;
+  justify-content: center;
+}
+.btn-google img { width: 22px; height: 22px; }
+.login-note {
+  font-size: 0.75rem;
+  color: var(--muted);
+  opacity: 0.5;
+  text-align: center;
+}
+/* USER HEADER */
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.user-avatar {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  object-fit: cover;
+}
+.user-menu {
+  position: absolute;
+  top: 40px; right: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  z-index: 100;
+  min-width: 160px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  display: none;
+}
+.user-menu.open { display: block; }
+.user-menu-item {
+  padding: 13px 16px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--text2);
+  border-bottom: 1px solid var(--border);
+}
+.user-menu-item:last-child { border-bottom: none; }
+.user-menu-item:hover { background: var(--surface2); }
+.user-menu-item.logout { color: var(--red); }
+
 .btn-close {
   width: 100%; background: var(--surface2); border: 1px solid var(--border);
   border-radius: 12px; color: var(--muted); font-family: 'Inter', sans-serif;
@@ -669,6 +773,21 @@ body.theme-gradient .cat-item:hover {
 </head>
 <body class="theme-dark">
 
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen" style="display:none">
+  <div class="login-screen">
+    <div class="login-logo">💰</div>
+    <div class="login-title">Minhas <span>Finanças</span></div>
+    <div class="login-sub">Seus dados salvos na nuvem, acessíveis em qualquer celular</div>
+    <button class="btn-google" onclick="loginGoogle()">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+      Entrar com Google
+    </button>
+    <div class="login-note">Seus dados ficam protegidos e privados</div>
+  </div>
+</div>
+
 <header>
   <div class="header-left">
     <div class="greeting">Olá,</div>
@@ -684,6 +803,16 @@ body.theme-gradient .cat-item:hover {
     </div>
     <div style="position:relative">
       <div class="theme-btn" onclick="toggleThemeMenu()">🎨</div>
+    </div>
+    <div style="position:relative">
+      <div class="user-info" onclick="toggleUserMenu()" id="userBtn" style="display:none">
+        <img class="user-avatar" id="userAvatar" src="" alt="">
+      </div>
+      <div class="user-menu" id="userMenu">
+        <div class="user-menu-item" id="userEmail" style="color:var(--muted);font-size:0.78rem"></div>
+        <div class="user-menu-item logout" onclick="logout()">Sair</div>
+      </div>
+    <div style="display:none">
       <div class="theme-menu" id="themeMenu">
         <div class="theme-opt" onclick="setTheme('theme-dark')" id="opt-dark">
           <div class="theme-dot" style="background:#0a0a0a;border:1px solid #444"></div> Escuro
@@ -695,6 +824,7 @@ body.theme-gradient .cat-item:hover {
           <div class="theme-dot" style="background:linear-gradient(135deg,#0f0c29,#302b63)"></div> Gradiente
         </div>
       </div>
+    </div>
     </div>
   </div>
 </header>
@@ -938,7 +1068,7 @@ function launchFixed(idx) {
   const used=getUsed(); if(used.includes(idx)) return;
   const items=getItems();
   items.unshift({id:Date.now(),type:'expense',desc:f.desc+' (fixo)',val:f.val,cat:'Fixo',date:new Date().toLocaleDateString('pt-BR')});
-  saveItems(items); used.push(idx); saveUsed(used); render();
+  saveItems(items); syncToSupabase(items); used.push(idx); saveUsed(used); render();
 }
 function addFixed() {
   const desc=document.getElementById('fixedDescIn').value.trim();
@@ -1078,12 +1208,118 @@ function confirmCancel() {
 function confirmDelete() {
   document.getElementById('confirmOverlay').style.display = 'none';
   if(pendingDeleteId === null) return;
-  saveItems(getItems().filter(i=>i.id!==pendingDeleteId));
+  const newItems = getItems().filter(i=>i.id!==pendingDeleteId);
+  saveItems(newItems);
+  syncToSupabase(newItems);
   render();
   if(pendingDeleteSource === 'modal') renderTxModal();
   pendingDeleteId = null;
   pendingDeleteSource = null;
 }
+
+
+// SUPABASE CONFIG
+const SUPABASE_URL = 'https://xqwtofggidvonlefdgfm.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_m8lOJuqvMRz6hDC_3Vpd0A_-j0eTqiNF';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let currentUser = null;
+
+async function loginGoogle() {
+  const { error } = await sb.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: window.location.href
+    }
+  });
+  if (error) alert('Erro ao fazer login: ' + error.message);
+}
+
+async function logout() {
+  await sb.auth.signOut();
+  currentUser = null;
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('userBtn').style.display = 'none';
+  document.getElementById('userMenu').classList.remove('open');
+}
+
+function toggleUserMenu() {
+  document.getElementById('userMenu').classList.toggle('open');
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.user-info') && !e.target.closest('.user-menu'))
+    document.getElementById('userMenu').classList.remove('open');
+});
+
+// Override localStorage functions to use Supabase
+async function syncToSupabase(items) {
+  if (!currentUser) return;
+  // Delete all for this user+month and re-insert
+  await sb.from('lancamentos').delete().eq('user_id', currentUser.id).eq('ano', vYear).eq('mes', vMonth);
+  if (!items.length) return;
+  const rows = items.map(i => ({
+    user_id: currentUser.id,
+    tipo: i.type,
+    descricao: i.desc,
+    valor: i.val,
+    categoria: i.cat || '',
+    data: i.date || '',
+    data_prevista: i.plannedDate || '',
+    ano: vYear,
+    mes: vMonth
+  }));
+  await sb.from('lancamentos').insert(rows);
+}
+
+async function loadFromSupabase() {
+  if (!currentUser) return;
+  const { data, error } = await sb.from('lancamentos')
+    .select('*')
+    .eq('user_id', currentUser.id)
+    .eq('ano', vYear)
+    .eq('mes', vMonth);
+  if (error || !data) return;
+  const items = data.map(r => ({
+    id: r.id,
+    type: r.tipo,
+    desc: r.descricao,
+    val: parseFloat(r.valor),
+    cat: r.categoria,
+    date: r.data,
+    plannedDate: r.data_prevista
+  }));
+  saveItems(items);
+}
+
+async function initAuth() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session?.user) {
+    currentUser = session.user;
+    document.getElementById('loginScreen').style.display = 'none';
+    const avatar = document.getElementById('userAvatar');
+    avatar.src = currentUser.user_metadata?.avatar_url || '';
+    document.getElementById('userBtn').style.display = 'flex';
+    document.getElementById('userEmail').textContent = currentUser.email;
+    await loadFromSupabase();
+    render();
+  } else {
+    document.getElementById('loginScreen').style.display = 'flex';
+  }
+}
+
+sb.auth.onAuthStateChange(async (event, session) => {
+  if (event === 'SIGNED_IN' && session?.user) {
+    currentUser = session.user;
+    document.getElementById('loginScreen').style.display = 'none';
+    const avatar = document.getElementById('userAvatar');
+    avatar.src = currentUser.user_metadata?.avatar_url || '';
+    document.getElementById('userBtn').style.display = 'flex';
+    document.getElementById('userEmail').textContent = currentUser.email;
+    await loadFromSupabase();
+    render();
+  }
+});
 
 function formatDateBR(dateStr) {
   if(!dateStr) return '';
@@ -1104,7 +1340,7 @@ function addToCalendar(desc, val, dateStr) {
 (function init(){
   setTheme(LS('fin_theme','theme-dark'));
   const name=LS('fin_name',''); if(name) document.getElementById('nameSpan').textContent=name;
-  render();
+  initAuth();
 })();
 </script>
 <script>
