@@ -1293,6 +1293,15 @@ async function loadFromSupabase() {
 }
 
 async function initAuth() {
+  // Handle OAuth redirect with tokens in URL hash
+  if (window.location.hash && window.location.hash.includes('access_token')) {
+    const { data, error } = await sb.auth.getSession();
+    if (data?.session) {
+      // Clean up URL
+      history.replaceState(null, '', window.location.pathname);
+    }
+  }
+
   const { data: { session } } = await sb.auth.getSession();
   if (session?.user) {
     currentUser = session.user;
