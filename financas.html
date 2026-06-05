@@ -1226,10 +1226,11 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 let currentUser = null;
 
 async function loginGoogle() {
+  const redirectUrl = window.location.href.split('?')[0].split('#')[0];
   const { error } = await sb.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: 'https://jetrodesigner-collab.github.io/Finan-as/financas.html'
+      redirectTo: redirectUrl
     }
   });
   if (error) alert('Erro ao fazer login: ' + error.message);
@@ -1292,41 +1293,50 @@ async function loadFromSupabase() {
   saveItems(items);
 }
 
+async function setUserSession(user) {
+  currentUser = user;
+  document.getElementById('loginScreen').style.display = 'none';
+  const avatar = document.getElementById('userAvatar');
+  avatar.src = currentUser.user_metadata?.avatar_url || '';
+  document.getElementById('userBtn').style.display = 'flex';
+  document.getElementById('userEmail').textContent = currentUser.email;
+  await loadFromSupabase();
+  render();
+}
+
 async function initAuth() {
-  // Handle OAuth redirect with tokens in URL hash
-  if (window.location.hash && window.location.hash.includes('access_token')) {
-    const { data, error } = await sb.auth.getSession();
-    if (data?.session) {
-      // Clean up URL
-      history.replaceState(null, '', window.location.pathname);
-    }
+  // First check URL hash for tokens (OAuth redirect)
+  const hash = window.location.hash;
+  if (hash && hash.includes('access_token')) {
+    try {
+      const params = new URLSearchParams(hash.substring(1));
+      const accessToken = params.get('access_token');
+      const refreshToken = params.get('refresh_token');
+      if (accessToken) {
+        const { data, error } = await sb.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken || ''
+        });
+        if (data?.session?.user) {
+          history.replaceState(null, '', window.location.pathname);
+          await setUserSession(data.session.user);
+          return;
+        }
+      }
+    } catch(e) {}
   }
 
   const { data: { session } } = await sb.auth.getSession();
   if (session?.user) {
-    currentUser = session.user;
-    document.getElementById('loginScreen').style.display = 'none';
-    const avatar = document.getElementById('userAvatar');
-    avatar.src = currentUser.user_metadata?.avatar_url || '';
-    document.getElementById('userBtn').style.display = 'flex';
-    document.getElementById('userEmail').textContent = currentUser.email;
-    await loadFromSupabase();
-    render();
+    await setUserSession(session.user);
   } else {
     document.getElementById('loginScreen').style.display = 'flex';
   }
 }
 
 sb.auth.onAuthStateChange(async (event, session) => {
-  if (event === 'SIGNED_IN' && session?.user) {
-    currentUser = session.user;
-    document.getElementById('loginScreen').style.display = 'none';
-    const avatar = document.getElementById('userAvatar');
-    avatar.src = currentUser.user_metadata?.avatar_url || '';
-    document.getElementById('userBtn').style.display = 'flex';
-    document.getElementById('userEmail').textContent = currentUser.email;
-    await loadFromSupabase();
-    render();
+  if (event === 'SIGNED_IN' && session?.user && !currentUser) {
+    await setUserSession(session.user);
   }
 });
 
