@@ -797,8 +797,13 @@ function addItem() {
   document.getElementById('catInput').value='';
   render();
 }
-function delItem(id) { saveItems(getItems().filter(i=>i.id!==id)); render(); renderTxModal(); }
-function delMove(id) { saveItems(getItems().filter(i=>i.id!==id)); render(); }
+function delItem(id) { if(!confirm("Apagar este lançamento?")) return; saveItems(getItems().filter(i=>i.id!==id)); render(); renderTxModal(); }
+function delMove(id) { 
+  if(!confirm("Apagar este lançamento?")) return; 
+  saveItems(getItems().filter(i=>i.id!==id)); 
+  render();
+  if(document.getElementById('txModal').style.display!=='none') renderTxModal();
+}
 
 function changeMonth(d) {
   vMonth+=d;
