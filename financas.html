@@ -1004,7 +1004,7 @@ function render() {
   document.getElementById('monthLabel').textContent=MONTHS[vMonth].slice(0,3)+' '+vYear;
   const items=getItems();
   let inc=0,exp=0;
-  items.forEach(i=>i.type==='income'?inc+=i.val:exp+=i.val);
+  items.forEach(i=>{ if(i.type==='income') inc+=i.val; else if(i.type==='expense') exp+=i.val; });
   const bal=inc-exp;
   document.getElementById('totInc').textContent=fmt(inc);
   document.getElementById('totExp').textContent=fmt(exp);
@@ -1038,10 +1038,11 @@ function render() {
   else{pcPlan.innerHTML=planned.slice(0,3).map(i=>`<div class="pcard-row"><div class="pcard-dot"></div><span class="pcard-name">${i.desc}</span><span class="pcard-val">${fmtS(i.val)}</span></div>`).join('');}
 
   // Movimentações list
+  const moveItems=items.filter(i=>i.type!=='planned');
   const ml=document.getElementById('movesList');
-  if(!items.length){ml.innerHTML='<div class="empty">Nenhum lançamento neste mês</div>';}
+  if(!moveItems.length){ml.innerHTML='<div class="empty">Nenhum lançamento neste mês</div>';}
   else {
-    ml.innerHTML=items.map(i=>`<div class="move-item"><div class="move-left"><div class="move-dot ${i.type==='income'?'inc':'exp'}"></div><div><div class="move-desc">${i.desc}</div><div class="move-meta">${i.cat||''}${i.cat&&i.date?' · ':''}${i.date||''}</div></div></div><div class="move-right"><span class="move-val ${i.type==='income'?'inc':'exp'}">${i.type==='income'?'+':'-'} ${fmt(i.val)}</span><button class="btn-del-move" onclick="delMove(${i.id})">×</button></div></div>`).join('');
+    ml.innerHTML=moveItems.map(i=>`<div class="move-item"><div class="move-left"><div class="move-dot ${i.type==='income'?'inc':'exp'}"></div><div><div class="move-desc">${i.desc}</div><div class="move-meta">${i.cat||''}${i.cat&&i.date?' · ':''}${i.date||''}</div></div></div><div class="move-right"><span class="move-val ${i.type==='income'?'inc':'exp'}">${i.type==='income'?'+':'-'} ${fmt(i.val)}</span><button class="btn-del-move" onclick="delMove(${i.id})">×</button></div></div>`).join('');
   }
 
   renderFixedTags();
