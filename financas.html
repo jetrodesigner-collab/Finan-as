@@ -1226,11 +1226,15 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 let currentUser = null;
 
 async function loginGoogle() {
-  const redirectUrl = window.location.href.split('?')[0].split('#')[0];
   const { error } = await sb.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: redirectUrl
+      redirectTo: 'https://jetrodesigner-collab.github.io/Finan-as/financas.html',
+      queryParams: {
+        access_type: 'offline',
+        prompt: 'consent',
+      },
+      skipBrowserRedirect: false
     }
   });
   if (error) alert('Erro ao fazer login: ' + error.message);
@@ -1305,33 +1309,19 @@ async function setUserSession(user) {
 }
 
 async function initAuth() {
-  // First check URL hash for tokens (OAuth redirect)
-  const hash = window.location.hash;
-  if (hash && hash.includes('access_token')) {
-    try {
-      const params = new URLSearchParams(hash.substring(1));
-      const accessToken = params.get('access_token');
-      const refreshToken = params.get('refresh_token');
-      if (accessToken) {
-        const { data, error } = await sb.auth.setSession({
-          access_token: accessToken,
-          refresh_token: refreshToken || ''
-        });
-        if (data?.session?.user) {
-          history.replaceState(null, '', window.location.pathname);
-          await setUserSession(data.session.user);
-          return;
-        }
-      }
-    } catch(e) {}
-  }
+  // Show login screen by default while checking
+  document.getElementById('loginScreen').style.display = 'flex';
 
-  const { data: { session } } = await sb.auth.getSession();
+  // Let Supabase handle the hash/code from URL automatically
+  const { data: { session }, error } = await sb.auth.getSession();
+  
   if (session?.user) {
     await setUserSession(session.user);
-  } else {
-    document.getElementById('loginScreen').style.display = 'flex';
+    return;
   }
+
+  // Still show login
+  document.getElementById('loginScreen').style.display = 'flex';
 }
 
 sb.auth.onAuthStateChange(async (event, session) => {
