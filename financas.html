@@ -1054,21 +1054,21 @@ function addItem() {
   const items=getItems();
   items.unshift({id:Date.now(),type:curType,desc,val,cat,date:new Date().toLocaleDateString('pt-BR'),plannedDate});
   saveItems(items);
+  render();
   syncToSupabase(items);
   document.getElementById('descInput').value='';
   document.getElementById('valInput').value='';
   document.getElementById('catInput').value='';
   document.getElementById('plannedDate').value='';
-  render();
 }
 function delItem(id) { askDelete(id, "modal"); }
 function delMove(id) { askDelete(id, "list"); }
 
-function changeMonth(d) {
+async function changeMonth(d) {
   vMonth+=d;
   if(vMonth>11){vMonth=0;vYear++;}
   if(vMonth<0){vMonth=11;vYear--;}
-  loadFromSupabase();
+  await loadFromSupabase();
   if(document.getElementById('txModal').style.display!=='none') renderTxModal();
 }
 
@@ -1077,7 +1077,7 @@ function launchFixed(idx) {
   const used=getUsed(); if(used.includes(idx)) return;
   const items=getItems();
   items.unshift({id:Date.now(),type:'expense',desc:f.desc+' (fixo)',val:f.val,cat:'Fixo',date:new Date().toLocaleDateString('pt-BR')});
-  saveItems(items); syncToSupabase(items); used.push(idx); saveUsed(used); render();
+  saveItems(items); render(); syncToSupabase(items); used.push(idx); saveUsed(used);
 }
 function addFixed() {
   const desc=document.getElementById('fixedDescIn').value.trim();
@@ -1219,8 +1219,8 @@ function confirmDelete() {
   if(pendingDeleteId === null) return;
   const newItems = getItems().filter(i=>i.id!==pendingDeleteId);
   saveItems(newItems);
-  syncToSupabase(newItems);
   render();
+  syncToSupabase(newItems);
   if(pendingDeleteSource === 'modal') renderTxModal();
   pendingDeleteId = null;
   pendingDeleteSource = null;
