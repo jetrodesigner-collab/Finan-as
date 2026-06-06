@@ -255,12 +255,6 @@ header {
 }
 .pcard.gastos .pcard-bar { background: var(--red); }
 
-.preview-cards {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  padding: 0 22px 22px;
-}
 .preview-cards-row2 {
   padding: 0 22px 22px;
   margin-top: -10px;
@@ -653,9 +647,7 @@ body.theme-gradient .cat-item:hover {
   color: #fff;
 }
 
-
 /* LOGIN SCREEN */
-
 .loading-screen {
   position: fixed; inset: 0;
   background: var(--bg);
@@ -678,7 +670,7 @@ body.theme-gradient .cat-item:hover {
 
 .login-screen {
   position: fixed; inset: 0;
-  background: var(--bg);
+  background: linear-gradient(135deg, #0f0c29 0%, #1a1040 30%, #24243e 60%, #0f2027 100%);
   z-index: 500;
   display: flex;
   flex-direction: column;
@@ -686,30 +678,6 @@ body.theme-gradient .cat-item:hover {
   justify-content: center;
   padding: 40px 24px;
   gap: 24px;
-}
-body.theme-gradient 
-.loading-screen {
-  position: fixed; inset: 0;
-  background: var(--bg);
-  z-index: 999;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-}
-.loading-spinner {
-  width: 40px; height: 40px;
-  border: 3px solid var(--border);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-.loading-text { font-size: 0.85rem; color: var(--muted); }
-
-.login-screen {
-  background: linear-gradient(135deg, #0f0c29 0%, #1a1040 30%, #24243e 60%, #0f2027 100%);
 }
 .login-logo {
   width: 80px; height: 80px;
@@ -752,7 +720,6 @@ body.theme-gradient
   max-width: 320px;
   justify-content: center;
 }
-.btn-google img { width: 22px; height: 22px; }
 .login-note {
   font-size: 0.75rem;
   color: var(--muted);
@@ -815,8 +782,6 @@ body.theme-gradient
 </head>
 <body class="theme-dark">
 
-
-
 <!-- LOGIN SCREEN -->
 <div id="loginScreen" style="display:none">
   <div class="login-screen">
@@ -854,16 +819,6 @@ body.theme-gradient
     </div>
     <div style="position:relative">
       <div class="theme-btn" onclick="toggleThemeMenu()">🎨</div>
-    </div>
-    <div style="position:relative">
-      <div class="user-info" onclick="toggleUserMenu()" id="userBtn" style="display:none">
-        <img class="user-avatar" id="userAvatar" src="" alt="">
-      </div>
-      <div class="user-menu" id="userMenu">
-        <div class="user-menu-item" id="userEmail" style="color:var(--muted);font-size:0.78rem"></div>
-        <div class="user-menu-item logout" onclick="logout()">Sair</div>
-      </div>
-    <div style="display:none">
       <div class="theme-menu" id="themeMenu">
         <div class="theme-opt" onclick="setTheme('theme-dark')" id="opt-dark">
           <div class="theme-dot" style="background:#0a0a0a;border:1px solid #444"></div> Escuro
@@ -876,6 +831,14 @@ body.theme-gradient
         </div>
       </div>
     </div>
+    <div style="position:relative">
+      <div class="user-info" onclick="toggleUserMenu()" id="userBtn" style="display:none">
+        <img class="user-avatar" id="userAvatar" src="" alt="">
+      </div>
+      <div class="user-menu" id="userMenu">
+        <div class="user-menu-item" id="userEmail" style="color:var(--muted);font-size:0.78rem"></div>
+        <div class="user-menu-item logout" onclick="logout()">Sair</div>
+      </div>
     </div>
   </div>
 </header>
@@ -1009,6 +972,18 @@ body.theme-gradient
   </div>
 </div>
 
+<!-- MODAL: confirmar exclusão -->
+<div class="confirm-overlay" id="confirmOverlay" style="display:none">
+  <div class="confirm-box">
+    <h3>Apagar lançamento?</h3>
+    <p>Essa ação não pode ser desfeita.</p>
+    <div class="confirm-btns">
+      <button class="btn-confirm-no" onclick="confirmCancel()">Cancelar</button>
+      <button class="btn-confirm-yes" onclick="confirmDelete()">Apagar</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 const DEF_CATS = ['Saúde','Alimentação','Lazer','Salário'];
@@ -1063,7 +1038,6 @@ async function saveName() {
   if (n) {
     LSSet('fin_name', n);
     document.getElementById('nameSpan').textContent = n;
-    // Save name to Supabase profile
     if (currentUser) {
       await sb.from('perfil').upsert({ user_id: currentUser.id, nome: n }, { onConflict: 'user_id' });
     }
@@ -1094,6 +1068,39 @@ function renderSug(list) {
 function pickCat(c) { document.getElementById('catInput').value=c; document.getElementById('catSug').classList.remove('open'); }
 function delCatUI(c) { delCat(c); renderSug(getAllCats()); }
 
+// ─────────────────────────────────────────────
+// SUPABASE: INSERT individual (retorna sbid UUID)
+// ─────────────────────────────────────────────
+async function insertToSupabase(item) {
+  if (!currentUser) return null;
+  const row = {
+    user_id: currentUser.id,
+    tipo: item.type,
+    descricao: item.desc,
+    valor: item.val,
+    categoria: item.cat || '',
+    data: item.date || '',
+    data_prevista: item.plannedDate || '',
+    ano: vYear,
+    mes: vMonth
+  };
+  const { data, error } = await sb.from('lancamentos').insert(row).select().single();
+  if (error) { console.error('Erro ao inserir no Supabase:', error); return null; }
+  return data?.id ?? null;
+}
+
+// ─────────────────────────────────────────────
+// SUPABASE: DELETE individual pelo UUID (sbid)
+// ─────────────────────────────────────────────
+async function deleteFromSupabase(sbid) {
+  if (!currentUser || !sbid) return;
+  const { error } = await sb.from('lancamentos')
+    .delete()
+    .eq('user_id', currentUser.id)
+    .eq('id', sbid);
+  if (error) console.error('Erro ao deletar do Supabase:', error);
+}
+
 function addItem() {
   const desc=document.getElementById('descInput').value.trim();
   const val=parseFloat(document.getElementById('valInput').value);
@@ -1102,16 +1109,25 @@ function addItem() {
   addCatIfNew(cat);
   const plannedDate = curType==='planned' ? document.getElementById('plannedDate').value : '';
   const items=getItems();
-  const newItem = {id:Date.now(),type:curType,desc,val,cat,date:new Date().toLocaleDateString('pt-BR'),plannedDate};
+  const localId = Date.now();
+  const newItem = {id:localId, type:curType, desc, val, cat, date:new Date().toLocaleDateString('pt-BR'), plannedDate};
   items.unshift(newItem);
   saveItems(items);
   render();
-  syncToSupabase(items);
+  // Inserir individualmente no Supabase e salvar o UUID retornado como sbid
+  insertToSupabase(newItem).then(sbid => {
+    if (sbid) {
+      const current = getItems();
+      const idx = current.findIndex(i => i.id === localId);
+      if (idx !== -1) { current[idx].sbid = sbid; saveItems(current); }
+    }
+  });
   document.getElementById('descInput').value='';
   document.getElementById('valInput').value='';
   document.getElementById('catInput').value='';
   document.getElementById('plannedDate').value='';
 }
+
 function delItem(id) { askDelete(String(id), "modal"); }
 function delMove(id) { askDelete(String(id), "list"); }
 
@@ -1126,10 +1142,24 @@ async function changeMonth(d) {
 function launchFixed(idx) {
   const f=getFixed()[idx]; if(!f) return;
   const used=getUsed(); if(used.includes(idx)) return;
+  const localId = Date.now();
+  const newFixed = {id:localId, type:'expense', desc:f.desc+' (fixo)', val:f.val, cat:'Fixo', date:new Date().toLocaleDateString('pt-BR')};
   const items=getItems();
-  items.unshift({id:Date.now(),type:'expense',desc:f.desc+' (fixo)',val:f.val,cat:'Fixo',date:new Date().toLocaleDateString('pt-BR')});
-  saveItems(items); render(); syncToSupabase(items); used.push(idx); saveUsed(used);
+  items.unshift(newFixed);
+  saveItems(items);
+  render();
+  // Inserir individualmente no Supabase e salvar o UUID retornado como sbid
+  insertToSupabase(newFixed).then(sbid => {
+    if (sbid) {
+      const current = getItems();
+      const idx2 = current.findIndex(i => i.id === localId);
+      if (idx2 !== -1) { current[idx2].sbid = sbid; saveItems(current); }
+    }
+  });
+  used.push(idx);
+  saveUsed(used);
 }
+
 function addFixed() {
   const desc=document.getElementById('fixedDescIn').value.trim();
   const val=parseFloat(document.getElementById('fixedValIn').value);
@@ -1154,7 +1184,7 @@ function renderTxModal() {
   const list=document.getElementById('txModalList');
   if(!items.length){list.innerHTML='<div class="empty">Nenhum lançamento</div>';return;}
   const dotClass=isExp?'r':isPlan?'y':'g'; const valClass=isExp?'r':isPlan?'y':'g'; const prefix=isExp?'-':isPlan?'':'+';
-list.innerHTML=items.map(i=>`<div class="modal-item"><div class="modal-item-l"><div class="modal-dot ${dotClass}"></div><div class="modal-item-info"><div class="desc">${i.desc}</div><div class="meta">${i.cat||''}${i.cat&&i.date?' · ':''}${i.date||''}${isPlan&&i.plannedDate?' 📅 '+formatDateBR(i.plannedDate):''}</div></div></div><div class="modal-item-r">${isPlan&&i.plannedDate?`<button class="btn-cal" onclick="addToCalendar('${i.desc}',${i.val},'${i.plannedDate}')">📅</button>`:''}<span class="modal-item-val ${valClass}">${prefix} ${fmt(i.val)}</span><button class="btn-del-item" onclick="delItem(${i.id})">×</button></div></div>`).join('');
+  list.innerHTML=items.map(i=>`<div class="modal-item"><div class="modal-item-l"><div class="modal-dot ${dotClass}"></div><div class="modal-item-info"><div class="desc">${i.desc}</div><div class="meta">${i.cat||''}${i.cat&&i.date?' · ':''}${i.date||''}${isPlan&&i.plannedDate?' 📅 '+formatDateBR(i.plannedDate):''}</div></div></div><div class="modal-item-r">${isPlan&&i.plannedDate?`<button class="btn-cal" onclick="addToCalendar('${i.desc}',${i.val},'${i.plannedDate}')">📅</button>`:''}<span class="modal-item-val ${valClass}">${prefix} ${fmt(i.val)}</span><button class="btn-del-item" onclick="delItem(${i.id})">×</button></div></div>`).join('');
 }
 
 function openFixedModal() { renderFixedModal(); document.getElementById('fixedModal').style.display='flex'; }
@@ -1238,7 +1268,6 @@ function render() {
   if(!planned.length){pcPlan.innerHTML='<div style="font-size:0.78rem;color:var(--muted);padding:4px 0">Nenhum previsto</div>';}
   else{pcPlan.innerHTML=planned.slice(0,3).map(i=>`<div class="pcard-row"><div class="pcard-dot"></div><span class="pcard-name">${i.desc}</span><span class="pcard-val">${fmtS(i.val)}</span></div>`).join('');}
 
-  // Movimentações list
   const moveItems=items.filter(i=>i.type!=='planned');
   const ml=document.getElementById('movesList');
   if(!moveItems.length){ml.innerHTML='<div class="empty">Nenhum lançamento neste mês</div>';}
@@ -1249,7 +1278,9 @@ function render() {
   renderFixedTags();
 }
 
-
+// ─────────────────────────────────────────────
+// DELETE com confirmação
+// ─────────────────────────────────────────────
 let pendingDeleteId = null;
 let pendingDeleteSource = null;
 
@@ -1267,38 +1298,39 @@ function confirmCancel() {
 
 async function confirmDelete() {
   document.getElementById('confirmOverlay').style.display = 'none';
-  if(pendingDeleteId === null) return;
-  // Find the item to get its Supabase ID
+  if (pendingDeleteId === null) return;
+
   const allItems = getItems();
   const item = allItems.find(i => String(i.id) === String(pendingDeleteId));
-  // Delete from Supabase
-  if (currentUser && item) {
-    const sbId = item.sbid || item.id;
-    await sb.from('lancamentos').delete().eq('user_id', currentUser.id).eq('id', String(sbId));
+
+  // Deletar do Supabase pelo UUID real (sbid), não pelo id local
+  if (currentUser && item && item.sbid) {
+    await deleteFromSupabase(item.sbid);
   }
-  // Update local
+
+  // Remover do localStorage
   const newItems = allItems.filter(i => String(i.id) !== String(pendingDeleteId));
   saveItems(newItems);
   render();
-  if(pendingDeleteSource === 'modal') renderTxModal();
+  if (pendingDeleteSource === 'modal') renderTxModal();
+
   pendingDeleteId = null;
   pendingDeleteSource = null;
 }
 
-
-// SUPABASE CONFIG
+// ─────────────────────────────────────────────
+// SUPABASE AUTH & LOAD
+// ─────────────────────────────────────────────
 const SUPABASE_URL = 'https://xqwtofggidvonlefdgfm.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhxd3RvZmdnaWR2b25sZWZkZ2ZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2OTA5MjIsImV4cCI6MjA5NjI2NjkyMn0.3GVttSNmy1Vb8kjbLBOUp-AwIazXjOc_qmMo8oOVbew';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let currentUser = null;
-
 let isRegisterMode = false;
 
 function toggleRegister() {
   isRegisterMode = !isRegisterMode;
   document.getElementById('toggleBtn').textContent = isRegisterMode ? 'Já tem conta? Entrar' : 'Não tem conta? Cadastrar';
-  document.querySelector('#loginForm .btn-google, #loginForm button[onclick="loginEmail()"]') ;
   const btn = document.querySelector('#loginForm button[onclick="loginEmail()"]');
   if(btn) btn.textContent = isRegisterMode ? 'Cadastrar' : 'Entrar';
   document.getElementById('authMsg').style.display = 'none';
@@ -1316,9 +1348,7 @@ async function loginEmail() {
   const password = document.getElementById('authPassword').value;
   if (!email || !password) { showAuthMsg('Preencha email e senha!'); return; }
   if (password.length < 6) { showAuthMsg('Senha precisa ter pelo menos 6 caracteres!'); return; }
-  
   showAuthMsg('Aguarde...', 'var(--muted)');
-  
   if (isRegisterMode) {
     const { data, error } = await sb.auth.signUp({ email, password });
     if (error) { showAuthMsg(error.message); return; }
@@ -1347,25 +1377,6 @@ document.addEventListener('click', e => {
     document.getElementById('userMenu').classList.remove('open');
 });
 
-// Override localStorage functions to use Supabase
-async function syncToSupabase(items) {
-  if (!currentUser) return;
-  await sb.from('lancamentos').delete().eq('user_id', currentUser.id).eq('ano', vYear).eq('mes', vMonth);
-  if (!items.length) return;
-  const rows = items.map(i => ({
-    user_id: currentUser.id,
-    tipo: i.type,
-    descricao: i.desc,
-    valor: i.val,
-    categoria: i.cat || '',
-    data: i.date || '',
-    data_prevista: i.plannedDate || '',
-    ano: vYear,
-    mes: vMonth
-  }));
-  await sb.from('lancamentos').insert(rows);
-}
-
 async function loadFromSupabase() {
   if (!currentUser) return;
   const { data, error } = await sb.from('lancamentos')
@@ -1374,9 +1385,10 @@ async function loadFromSupabase() {
     .eq('ano', vYear)
     .eq('mes', vMonth);
   if (error || !data) return;
+  // Preservar sbid = id do Supabase (UUID) e usar como referência para deletes futuros
   const items = data.map(r => ({
-    id: r.id,
-    sbid: r.id,
+    id: r.id,       // id local = UUID do Supabase (para itens carregados da nuvem)
+    sbid: r.id,     // sbid = UUID do Supabase (sempre presente)
     type: r.tipo,
     desc: r.descricao,
     val: parseFloat(r.valor),
@@ -1394,7 +1406,6 @@ async function setUserSession(user) {
   document.getElementById('userBtn').style.display = 'flex';
   document.getElementById('userEmail').textContent = currentUser.email;
   render();
-  // Load name from Supabase
   const { data: perfil } = await sb.from('perfil').select('nome').eq('user_id', currentUser.id).single();
   if (perfil?.nome) {
     LSSet('fin_name', perfil.nome);
@@ -1407,14 +1418,12 @@ async function setUserSession(user) {
 }
 
 async function initAuth() {
-  // Don't show login screen yet - wait for session check
   const { data: { session } } = await sb.auth.getSession();
   if (session?.user) {
     currentUser = session.user;
     document.getElementById('userBtn').style.display = 'flex';
     document.getElementById('userEmail').textContent = currentUser.email;
     render();
-    // Load name from Supabase
     const { data: perfil } = await sb.from('perfil').select('nome').eq('user_id', currentUser.id).single();
     if (perfil?.nome) {
       LSSet('fin_name', perfil.nome);
@@ -1425,7 +1434,6 @@ async function initAuth() {
     }
     loadFromSupabase();
   } else {
-    // Only show login if confirmed no session
     document.getElementById('loginScreen').style.display = 'flex';
   }
 }
@@ -1462,17 +1470,5 @@ if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); });
 }
 </script>
-
-<!-- MODAL: confirmar exclusão -->
-<div class="confirm-overlay" id="confirmOverlay" style="display:none">
-  <div class="confirm-box">
-    <h3>Apagar lançamento?</h3>
-    <p>Essa ação não pode ser desfeita.</p>
-    <div class="confirm-btns">
-      <button class="btn-confirm-no" onclick="confirmCancel()">Cancelar</button>
-      <button class="btn-confirm-yes" onclick="confirmDelete()">Apagar</button>
-    </div>
-  </div>
-</div>
 </body>
 </html>
