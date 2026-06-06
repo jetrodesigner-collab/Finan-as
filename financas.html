@@ -1068,7 +1068,7 @@ function changeMonth(d) {
   vMonth+=d;
   if(vMonth>11){vMonth=0;vYear++;}
   if(vMonth<0){vMonth=11;vYear--;}
-  render();
+  loadFromSupabase();
   if(document.getElementById('txModal').style.display!=='none') renderTxModal();
 }
 
@@ -1326,6 +1326,7 @@ async function loadFromSupabase() {
     plannedDate: r.data_prevista
   }));
   saveItems(items);
+  render();
 }
 
 async function setUserSession(user) {
@@ -1336,7 +1337,6 @@ async function setUserSession(user) {
   document.getElementById('userBtn').style.display = 'flex';
   document.getElementById('userEmail').textContent = currentUser.email;
   await loadFromSupabase();
-  render();
 }
 
 async function initAuth() {
