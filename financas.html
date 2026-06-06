@@ -1102,14 +1102,20 @@ function addItem() {
   addCatIfNew(cat);
   const plannedDate = curType==='planned' ? document.getElementById('plannedDate').value : '';
   const items=getItems();
-  items.unshift({id:Date.now(),type:curType,desc,val,cat,date:new Date().toLocaleDateString('pt-BR'),plannedDate});
+  const newItem = {id:Date.now(),type:curType,desc,val,cat,date:new Date().toLocaleDateString('pt-BR'),plannedDate};
+  items.unshift(newItem);
   saveItems(items);
   render();
-  syncToSupabase(items);
   document.getElementById('descInput').value='';
   document.getElementById('valInput').value='';
   document.getElementById('catInput').value='';
   document.getElementById('plannedDate').value='';
+  // Insert to Supabase and update local ID with UUID
+  const saved = await insertToSupabase(newItem);
+  if (saved) {
+    const updated = getItems().map(i => i.id === newItem.id ? {...i, id: saved.id, sbid: saved.id} : i);
+    saveItems(updated);
+  }
 }
 function delItem(id) { askDelete(String(id), "modal"); }
 function delMove(id) { askDelete(String(id), "list"); }
@@ -1127,7 +1133,14 @@ function launchFixed(idx) {
   const used=getUsed(); if(used.includes(idx)) return;
   const items=getItems();
   items.unshift({id:Date.now(),type:'expense',desc:f.desc+' (fixo)',val:f.val,cat:'Fixo',date:new Date().toLocaleDateString('pt-BR')});
-  saveItems(items); render(); syncToSupabase(items); used.push(idx); saveUsed(used);
+  saveItems(items); render(); used.push(idx); saveUsed(used);
+  const fixedItem = items[0];
+  insertToSupabase(fixedItem).then(saved => {
+    if (saved) {
+      const updated = getItems().map(i => i.id === fixedItem.id ? {...i, id: saved.id, sbid: saved.id} : i);
+      saveItems(updated);
+    }
+  });
 }
 function addFixed() {
   const desc=document.getElementById('fixedDescIn').value.trim();
@@ -1347,23 +1360,24 @@ document.addEventListener('click', e => {
 });
 
 // Override localStorage functions to use Supabase
-async function syncToSupabase(items) {
-  if (!currentUser) return;
-  // Delete all for this user+month and re-insert
-  await sb.from('lancamentos').delete().eq('user_id', currentUser.id).eq('ano', vYear).eq('mes', vMonth);
-  if (!items.length) return;
-  const rows = items.map(i => ({
+async function insertToSupabase(item) {
+  if (!currentUser) return null;
+  const { data, error } = await sb.from('lancamentos').insert([{
     user_id: currentUser.id,
-    tipo: i.type,
-    descricao: i.desc,
-    valor: i.val,
-    categoria: i.cat || '',
-    data: i.date || '',
-    data_prevista: i.plannedDate || '',
+    tipo: item.type,
+    descricao: item.desc,
+    valor: item.val,
+    categoria: item.cat || '',
+    data: item.date || '',
+    data_prevista: item.plannedDate || '',
     ano: vYear,
     mes: vMonth
-  }));
-  await sb.from('lancamentos').insert(rows);
+  }]).select().single();
+  return data;
+}
+
+async function syncToSupabase(items) {
+  // Keep for compatibility but don't use delete-all approach
 }
 
 async function loadFromSupabase() {
