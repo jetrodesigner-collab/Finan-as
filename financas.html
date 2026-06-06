@@ -1058,9 +1058,16 @@ function openNameModal() {
 }
 function closeNameModal() { document.getElementById('nameModal').style.display = 'none'; }
 function closeNameOutside(e) { if (e.target.id==='nameModal') closeNameModal(); }
-function saveName() {
+async function saveName() {
   const n = document.getElementById('nameInput').value.trim();
-  if (n) { LSSet('fin_name', n); document.getElementById('nameSpan').textContent = n; }
+  if (n) {
+    LSSet('fin_name', n);
+    document.getElementById('nameSpan').textContent = n;
+    // Save name to Supabase profile
+    if (currentUser) {
+      await sb.from('perfil').upsert({ user_id: currentUser.id, nome: n }, { onConflict: 'user_id' });
+    }
+  }
   closeNameModal();
 }
 
@@ -1375,11 +1382,18 @@ async function loadFromSupabase() {
 async function setUserSession(user) {
   currentUser = user;
   document.getElementById('loginScreen').style.display = 'none';
-  const savedName = LS('fin_name', '');
-  if (savedName) document.getElementById('nameSpan').textContent = savedName;
   document.getElementById('userBtn').style.display = 'flex';
   document.getElementById('userEmail').textContent = currentUser.email;
   render();
+  // Load name from Supabase
+  const { data: perfil } = await sb.from('perfil').select('nome').eq('user_id', currentUser.id).single();
+  if (perfil?.nome) {
+    LSSet('fin_name', perfil.nome);
+    document.getElementById('nameSpan').textContent = perfil.nome;
+  } else {
+    const savedName = LS('fin_name', '');
+    if (savedName) document.getElementById('nameSpan').textContent = savedName;
+  }
   loadFromSupabase();
 }
 
@@ -1388,11 +1402,18 @@ async function initAuth() {
   const { data: { session } } = await sb.auth.getSession();
   if (session?.user) {
     currentUser = session.user;
-    const savedName = LS('fin_name', '');
-    if (savedName) document.getElementById('nameSpan').textContent = savedName;
     document.getElementById('userBtn').style.display = 'flex';
     document.getElementById('userEmail').textContent = currentUser.email;
     render();
+    // Load name from Supabase
+    const { data: perfil } = await sb.from('perfil').select('nome').eq('user_id', currentUser.id).single();
+    if (perfil?.nome) {
+      LSSet('fin_name', perfil.nome);
+      document.getElementById('nameSpan').textContent = perfil.nome;
+    } else {
+      const savedName = LS('fin_name', '');
+      if (savedName) document.getElementById('nameSpan').textContent = savedName;
+    }
     loadFromSupabase();
   } else {
     // Only show login if confirmed no session
