@@ -70,7 +70,6 @@ body.theme-gradient {
   min-height: 100vh;
 }
 
-/* HEADER */
 header {
   padding: 36px 22px 18px;
   border-bottom: 1px solid var(--border);
@@ -84,265 +83,90 @@ header {
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 }
-.header-left .greeting {
-  font-size: 0.85rem;
-  font-weight: 400;
-  color: var(--muted);
-  margin-bottom: 3px;
-}
-.header-left .username {
-  font-size: 1.8rem;
-  font-weight: 800;
-  letter-spacing: -0.5px;
-  color: var(--text);
-  cursor: pointer;
-}
+.header-left .greeting { font-size: 0.85rem; font-weight: 400; color: var(--muted); margin-bottom: 3px; }
+.header-left .username { font-size: 1.8rem; font-weight: 800; letter-spacing: -0.5px; color: var(--text); cursor: pointer; }
 .header-left .username span { color: var(--accent); }
 
 .header-right { display: flex; align-items: center; gap: 8px; }
 .month-nav { display: flex; align-items: center; gap: 6px; }
 .month-nav button {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  color: var(--text);
-  width: 32px; height: 32px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1.1rem;
+  background: var(--surface2); border: 1px solid var(--border); color: var(--text);
+  width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 1.1rem;
   display: flex; align-items: center; justify-content: center;
 }
-.month-label {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--text);
-  min-width: 82px;
-  text-align: center;
-}
+.month-label { font-size: 0.95rem; font-weight: 600; color: var(--text); min-width: 82px; text-align: center; }
 .theme-btn {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  width: 32px; height: 32px;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer;
-  font-size: 1.1rem;
-  position: relative;
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 10px;
+  width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 1.1rem; position: relative;
 }
 .theme-menu {
-  position: absolute;
-  top: 40px; right: 0;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
-  z-index: 100;
-  min-width: 160px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-  display: none;
+  position: absolute; top: 40px; right: 0; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden; z-index: 100; min-width: 160px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5); display: none;
 }
 .theme-menu.open { display: block; }
 .theme-opt {
-  padding: 13px 16px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  display: flex; align-items: center; gap: 10px;
-  color: var(--text2);
-  border-bottom: 1px solid var(--border);
+  padding: 13px 16px; font-size: 0.9rem; font-weight: 500; cursor: pointer;
+  display: flex; align-items: center; gap: 10px; color: var(--text2); border-bottom: 1px solid var(--border);
 }
 .theme-opt:last-child { border-bottom: none; }
 .theme-opt:hover { background: var(--surface2); }
 .theme-opt.active { color: var(--accent); font-weight: 700; }
 .theme-dot { width: 13px; height: 13px; border-radius: 50%; flex-shrink: 0; }
 
-/* SUMMARY */
-.summary {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 14px;
-  padding: 18px 22px;
-}
-.sum-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 18px 10px;
-  text-align: center;
-}
-.sum-card .lbl {
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  margin-bottom: 8px;
-}
-.sum-card .val {
-  font-size: 1.1rem;
-  font-weight: 700;
-}
-.sum-card.inc .lbl { color: var(--green); }
-.sum-card.inc .val { color: var(--green); }
-.sum-card.exp .lbl { color: var(--red); }
-.sum-card.exp .val { color: var(--red); }
-.sum-card.bal .lbl { color: var(--accent); }
-.sum-card.bal .val { color: var(--accent); }
+.summary { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; padding: 18px 22px; }
+.sum-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px 10px; text-align: center; }
+.sum-card .lbl { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
+.sum-card .val { font-size: 1.1rem; font-weight: 700; }
+.sum-card.inc .lbl, .sum-card.inc .val { color: var(--green); }
+.sum-card.exp .lbl, .sum-card.exp .val { color: var(--red); }
+.sum-card.bal .lbl, .sum-card.bal .val { color: var(--accent); }
 
-/* PROGRESS */
-.progress-wrap {
-  margin: 0 22px 20px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 16px;
-}
-.progress-top {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: var(--muted);
-  margin-bottom: 10px;
-}
+.progress-wrap { margin: 0 22px 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 16px; }
+.progress-top { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 500; color: var(--muted); margin-bottom: 10px; }
 .progress-top span:last-child { color: var(--accent); font-weight: 700; }
-.progress-track {
-  height: 7px;
-  background: var(--border);
-  border-radius: 99px;
-  overflow: hidden;
-}
-.progress-fill {
-  height: 100%;
-  border-radius: 99px;
-  transition: width 0.5s ease;
-  background: var(--green);
-}
+.progress-track { height: 7px; background: var(--border); border-radius: 99px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 99px; transition: width 0.5s ease; background: var(--green); }
 .progress-fill.warn { background: var(--accent); }
 .progress-fill.danger { background: var(--red); }
 
-/* SECTION LABEL */
-.sec-label {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
-  padding: 0 22px;
-  margin-bottom: 12px;
-}
+.sec-label { font-size: 0.75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1.2px; padding: 0 22px; margin-bottom: 12px; }
 
-/* PREVIEW CARDS */
-.preview-cards {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  padding: 0 22px 22px;
-}
-.pcard {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px 16px 14px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition: border-color 0.2s, transform 0.1s;
-}
+.preview-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 22px 22px; }
+.pcard { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 16px 14px; cursor: pointer; position: relative; overflow: hidden; transition: border-color 0.2s, transform 0.1s; }
 .pcard:active { transform: scale(0.97); }
-.pcard-bar {
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-}
+.pcard-bar { position: absolute; top: 0; left: 0; right: 0; height: 3px; }
 .pcard.gastos .pcard-bar { background: var(--red); }
-
-.preview-cards-row2 {
-  padding: 0 22px 22px;
-  margin-top: -10px;
-}
+.preview-cards-row2 { padding: 0 22px 22px; margin-top: -10px; }
 .pcard.previsto .pcard-bar { background: var(--accent); }
 .pcard.previsto .pcard-title { color: var(--accent); }
 .pcard.previsto .pcard-dot { background: var(--accent); }
 .pcard.previsto .pcard-val { color: var(--accent); }
-
 .pcard.ganhos .pcard-bar { background: var(--green); }
-.pcard-title {
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  margin-bottom: 10px;
-}
+.pcard-title { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; }
 .pcard.gastos .pcard-title { color: var(--red); }
 .pcard.ganhos .pcard-title { color: var(--green); }
-.pcard-total {
-  font-size: 1.2rem;
-  font-weight: 800;
-  color: var(--text);
-  margin-bottom: 14px;
-}
+.pcard-total { font-size: 1.2rem; font-weight: 800; color: var(--text); margin-bottom: 14px; }
 .pcard-items { display: flex; flex-direction: column; gap: 7px; }
 .pcard-row { display: flex; align-items: center; gap: 7px; }
 .pcard-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; opacity: 0.8; }
 .pcard.gastos .pcard-dot { background: var(--red); }
 .pcard.ganhos .pcard-dot { background: var(--green); }
-.pcard-name {
-  font-size: 0.78rem;
-  font-weight: 400;
-  color: var(--muted);
-  flex: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.pcard-val {
-  font-size: 0.78rem;
-  font-weight: 600;
-  flex-shrink: 0;
-}
+.pcard-name { font-size: 0.78rem; font-weight: 400; color: var(--muted); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pcard-val { font-size: 0.78rem; font-weight: 600; flex-shrink: 0; }
 .pcard.gastos .pcard-val { color: var(--red); }
 .pcard.ganhos .pcard-val { color: var(--green); }
-.pcard-more {
-  margin-top: 12px;
-  font-size: 0.72rem;
-  font-weight: 500;
-  color: var(--muted);
-  text-align: right;
-  opacity: 0.5;
-}
+.pcard-more { margin-top: 12px; font-size: 0.72rem; font-weight: 500; color: var(--muted); text-align: right; opacity: 0.5; }
 
-/* LANÇAR */
 .add-area { padding: 0 22px 8px; display: flex; flex-direction: column; gap: 11px; }
 .type-toggle { display: flex; gap: 8px; }
-.type-toggle button {
-  flex: 1;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--surface);
-  color: var(--muted);
-  font-family: 'Inter', sans-serif;
-  font-weight: 600;
-  font-size: 0.95rem;
-  padding: 13px;
-  cursor: pointer;
-  transition: all 0.15s;
-}
+.type-toggle button { flex: 1; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); color: var(--muted); font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.95rem; padding: 13px; cursor: pointer; transition: all 0.15s; }
 .type-toggle button.act-inc { background: rgba(74,222,128,0.1); border-color: var(--green); color: var(--green); }
 .type-toggle button.act-exp { background: rgba(248,113,113,0.1); border-color: var(--red); color: var(--red); }
 .type-toggle button.act-plan { background: rgba(250,204,21,0.1); border-color: var(--accent); color: var(--accent); }
 .irow { display: flex; gap: 8px; }
-input, select {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  color: var(--text);
-  font-family: 'Inter', sans-serif;
-  font-size: 1rem;
-  padding: 14px 15px;
-  outline: none;
-  width: 100%;
-  -webkit-appearance: none;
-  transition: border-color 0.15s;
-}
+input, select { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; color: var(--text); font-family: 'Inter', sans-serif; font-size: 1rem; padding: 14px 15px; outline: none; width: 100%; -webkit-appearance: none; transition: border-color 0.15s; }
 input:focus { border-color: var(--accent); }
 input::placeholder { color: rgba(230,230,230,0.5); }
 body.theme-bege input::placeholder { color: rgba(30,20,10,0.5); }
@@ -350,154 +174,43 @@ body.theme-bege .date-lbl { color: rgba(30,20,10,0.5) !important; }
 body.theme-bege .btn-add { color: #ffffff !important; }
 body.theme-bege input { color: #1a1410; }
 body.theme-bege input[type="date"]::-webkit-datetime-edit { color: rgba(30,20,10,0.5); }
-body.theme-bege input[type="date"]::-webkit-datetime-edit-month-field,
-body.theme-bege input[type="date"]::-webkit-datetime-edit-day-field,
-body.theme-bege input[type="date"]::-webkit-datetime-edit-year-field { color: rgba(30,20,10,0.5); }
 body.theme-bege input[type="date"]:valid { color: #1a1410; }
 body.theme-bege input[type="date"]::-webkit-calendar-picker-indicator { filter: none; opacity: 0.5; }
 input[type="date"] { color: rgba(230,230,230,0.5); position:relative; }
 input[type="date"]:valid { color: rgba(230,230,230,0.9); }
 input[type="date"]::-webkit-datetime-edit { color: rgba(230,230,230,0.5); }
-input[type="date"]::-webkit-datetime-edit-text { color: rgba(230,230,230,0.5); }
-input[type="date"]::-webkit-datetime-edit-month-field { color: rgba(230,230,230,0.5); }
-input[type="date"]::-webkit-datetime-edit-day-field { color: rgba(230,230,230,0.5); }
-input[type="date"]::-webkit-datetime-edit-year-field { color: rgba(230,230,230,0.5); }
 input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) opacity(0.5); }
-.btn-add {
-  background: var(--accent);
-  color: #000;
-  border: none;
-  border-radius: 12px;
-  padding: 14px 20px;
-  font-family: 'Inter', sans-serif;
-  font-weight: 700;
-  font-size: 1rem;
-  cursor: pointer;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
+.btn-add { background: var(--accent); color: #000; border: none; border-radius: 12px; padding: 14px 20px; font-family: 'Inter', sans-serif; font-weight: 700; font-size: 1rem; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
 
-/* CAT */
 .cat-wrap { position: relative; flex: 1; }
-.cat-suggestions {
-  position: absolute;
-  top: calc(100% + 4px); left: 0; right: 0;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  z-index: 50;
-  max-height: 180px;
-  overflow-y: auto;
-  display: none;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-}
-body.theme-gradient .cat-suggestions {
-  background: #1a1535;
-  border-color: rgba(255,255,255,0.2);
-}
-body.theme-gradient .cat-item {
-  color: #ffffff;
-  border-bottom-color: rgba(255,255,255,0.1);
-}
-body.theme-gradient .cat-item:hover {
-  background: rgba(255,255,255,0.1);
-}
+.cat-suggestions { position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; z-index: 50; max-height: 180px; overflow-y: auto; display: none; box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+body.theme-gradient .cat-suggestions { background: #1a1535; border-color: rgba(255,255,255,0.2); }
+body.theme-gradient .cat-item { color: #ffffff; border-bottom-color: rgba(255,255,255,0.1); }
+body.theme-gradient .cat-item:hover { background: rgba(255,255,255,0.1); }
 .cat-suggestions.open { display: block; }
-.cat-item {
-  padding: 12px 15px;
-  font-size: 0.9rem;
-  font-weight: 400;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: var(--text2);
-  border-bottom: 1px solid var(--border);
-}
+.cat-item { padding: 12px 15px; font-size: 0.9rem; font-weight: 400; cursor: pointer; display: flex; justify-content: space-between; align-items: center; color: var(--text2); border-bottom: 1px solid var(--border); }
 .cat-item:last-child { border-bottom: none; }
 .cat-item:hover { background: var(--surface); }
 .cat-del { color: var(--muted); font-size: 1.1rem; padding: 0 4px; }
 .cat-del:hover { color: var(--red); }
 
-/* FIXED */
-.sec-label-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 22px;
-  margin-bottom: 12px;
-}
-.sec-label-row .lbl {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
-}
+.sec-label-row { display: flex; justify-content: space-between; align-items: center; padding: 0 22px; margin-bottom: 12px; }
+.sec-label-row .lbl { font-size: 0.75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1.2px; }
 .sec-label-row .hint { font-size: 0.78rem; font-weight: 400; color: var(--muted); opacity: 0.5; }
 .fixed-list { padding: 0 22px 10px; display: flex; flex-direction: column; gap: 8px; }
-.fixed-tag {
-  background: var(--surface2);
-  border: 1px dashed var(--border);
-  border-radius: 12px;
-  padding: 13px 15px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-  transition: border-color 0.15s;
-}
+.fixed-tag { background: var(--surface2); border: 1px dashed var(--border); border-radius: 12px; padding: 13px 15px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: border-color 0.15s; }
 .fixed-tag:active { opacity: 0.7; }
 .fixed-tag .fn { font-size: 0.92rem; font-weight: 400; color: var(--text2); }
 .fixed-tag .fv { font-size: 0.92rem; font-weight: 700; color: var(--red); }
 .fixed-tag.done { opacity: 0.35; }
 .fixed-tag.done .fn { text-decoration: line-through; }
-.manage-btn {
-  margin: 0 22px 10px;
-  background: var(--surface);
-  border: 1px dashed var(--border);
-  border-radius: 12px;
-  padding: 13px;
-  color: var(--muted);
-  font-size: 0.88rem;
-  font-weight: 500;
-  text-align: center;
-  cursor: pointer;
-}
+.manage-btn { margin: 0 22px 10px; background: var(--surface); border: 1px dashed var(--border); border-radius: 12px; padding: 13px; color: var(--muted); font-size: 0.88rem; font-weight: 500; text-align: center; cursor: pointer; }
 
-/* EXPORT/IMPORT */
-.export-row {
-  display: flex;
-  gap: 8px;
-  margin: 0 22px 22px;
-}
-.export-btn {
-  flex: 1;
-  background: var(--surface);
-  border: 1px dashed var(--border);
-  border-radius: 12px;
-  padding: 13px;
-  color: var(--muted);
-  font-size: 0.88rem;
-  font-weight: 500;
-  text-align: center;
-  cursor: pointer;
-  font-family: 'Inter', sans-serif;
-}
+.export-row { display: flex; gap: 8px; margin: 0 22px 22px; }
+.export-btn { flex: 1; background: var(--surface); border: 1px dashed var(--border); border-radius: 12px; padding: 13px; color: var(--muted); font-size: 0.88rem; font-weight: 500; text-align: center; cursor: pointer; font-family: 'Inter', sans-serif; }
 
-/* MOVIMENTAÇÕES LIST */
 .moves-list { padding: 0 22px; display: flex; flex-direction: column; gap: 8px; }
-.move-item {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 16px 18px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  animation: fadeIn 0.2s ease;
-}
+.move-item { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; animation: fadeIn 0.2s ease; }
 @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
 .move-left { display: flex; align-items: center; gap: 11px; flex: 1; min-width: 0; }
 .move-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
@@ -515,63 +228,22 @@ body.theme-gradient .cat-item:hover {
 .divider { border: none; border-top: 1px solid var(--border); margin: 10px 22px 24px; }
 .empty { text-align: center; color: var(--muted); font-size: 0.9rem; padding: 28px 20px; }
 
-/* MODAL */
-.modal-overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.88);
-  z-index: 200;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding: 16px;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-}
-.modal {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 22px;
-  padding: 24px 22px;
-  width: 100%;
-  max-width: 480px;
-  max-height: 82vh;
-  overflow-y: auto;
-  animation: slideUp 0.25s ease;
-}
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.88); z-index: 200; display: flex; align-items: flex-end; justify-content: center; padding: 16px; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.modal { background: var(--surface); border: 1px solid var(--border); border-radius: 22px; padding: 24px 22px; width: 100%; max-width: 480px; max-height: 82vh; overflow-y: auto; animation: slideUp 0.25s ease; }
 @keyframes slideUp { from { transform:translateY(30px); opacity:0; } to { transform:translateY(0); opacity:1; } }
-.modal-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 18px;
-}
+.modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
 .modal-head h2 { font-size: 1.05rem; font-weight: 700; }
 .modal-head h2.red { color: var(--red); }
 .modal-head h2.green { color: var(--green); }
-.modal-close {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--muted);
-  width: 30px; height: 30px;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer;
-  font-size: 1.2rem;
-}
+.modal-head h2.accent { color: var(--accent); }
+.modal-close { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--muted); width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.2rem; }
 .modal-items { display: flex; flex-direction: column; gap: 2px; margin-bottom: 10px; }
-.modal-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 13px 4px;
-  border-bottom: 1px solid var(--border);
-}
+.modal-item { display: flex; align-items: center; justify-content: space-between; padding: 13px 4px; border-bottom: 1px solid var(--border); }
 .modal-item:last-child { border-bottom: none; }
 .modal-item-l { display: flex; align-items: center; gap: 11px; flex: 1; min-width: 0; }
 .modal-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 .modal-dot.r { background: var(--red); }
 .modal-dot.y { background: var(--accent); }
-.modal-item-val.y { color: var(--accent); }
 .modal-dot.g { background: var(--green); }
 .modal-item-info .desc { font-size: 0.92rem; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 170px; }
 .modal-item-info .meta { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
@@ -579,225 +251,62 @@ body.theme-gradient .cat-item:hover {
 .modal-item-val { font-size: 0.92rem; font-weight: 700; }
 .modal-item-val.r { color: var(--red); }
 .modal-item-val.g { color: var(--green); }
+.modal-item-val.y { color: var(--accent); }
 .btn-del-item { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1.2rem; opacity: 0.4; padding: 2px; }
 .btn-del-item:hover { opacity: 1; color: var(--red); }
 .btn-cal { background: rgba(250,204,21,0.15); border: 1px solid var(--accent); border-radius: 8px; color: var(--accent); cursor: pointer; font-size: 0.85rem; padding: 4px 8px; }
 .modal-row { display: flex; gap: 8px; margin-bottom: 10px; }
 .modal-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; max-height: 200px; overflow-y: auto; }
-.modal-fixed-item {
-  display: flex; align-items: center; justify-content: space-between;
-  background: var(--surface2); border-radius: 12px; padding: 12px 14px;
-  font-size: 0.9rem; font-weight: 400;
-}
+.modal-fixed-item { display: flex; align-items: center; justify-content: space-between; background: var(--surface2); border-radius: 12px; padding: 12px 14px; font-size: 0.9rem; font-weight: 400; }
 .modal-fixed-val { color: var(--red); font-weight: 700; }
 
-/* Confirm modal */
-.confirm-overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.88);
-  z-index: 300;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  backdrop-filter: blur(6px);
-}
-.confirm-box {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 28px 24px;
-  width: 100%;
-  max-width: 320px;
-  text-align: center;
-  animation: slideUp 0.2s ease;
-}
-.confirm-box h3 {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--text);
-  margin-bottom: 8px;
-}
-.confirm-box p {
-  font-size: 0.88rem;
-  color: var(--muted);
-  margin-bottom: 22px;
-}
-.confirm-btns {
-  display: flex;
-  gap: 10px;
-}
-.confirm-btns button {
-  flex: 1;
-  padding: 13px;
-  border-radius: 12px;
-  border: none;
-  font-family: 'Inter', sans-serif;
-  font-weight: 700;
-  font-size: 0.95rem;
-  cursor: pointer;
-}
-.btn-confirm-no {
-  background: var(--surface2);
-  color: var(--muted);
-  border: 1px solid var(--border) !important;
-}
-.btn-confirm-yes {
-  background: var(--red);
-  color: #fff;
-}
+.modal-total { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; padding: 16px 4px 4px; border-top: 2px solid var(--border); }
+.modal-total .lbl { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); }
+.modal-total .val { font-size: 1.25rem; font-weight: 800; color: var(--accent); }
 
-/* LOGIN SCREEN */
-.loading-screen {
-  position: fixed; inset: 0;
-  background: var(--bg);
-  z-index: 999;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-}
-.loading-spinner {
-  width: 40px; height: 40px;
-  border: 3px solid var(--border);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-.loading-text { font-size: 0.85rem; color: var(--muted); }
+.confirm-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.88); z-index: 300; display: flex; align-items: center; justify-content: center; padding: 24px; backdrop-filter: blur(6px); }
+.confirm-box { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 28px 24px; width: 100%; max-width: 320px; text-align: center; animation: slideUp 0.2s ease; }
+.confirm-box h3 { font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+.confirm-box p { font-size: 0.88rem; color: var(--muted); margin-bottom: 22px; }
+.confirm-btns { display: flex; gap: 10px; }
+.confirm-btns button { flex: 1; padding: 13px; border-radius: 12px; border: none; font-family: 'Inter', sans-serif; font-weight: 700; font-size: 0.95rem; cursor: pointer; }
+.btn-confirm-no { background: var(--surface2); color: var(--muted); border: 1px solid var(--border) !important; }
+.btn-confirm-yes { background: var(--red); color: #fff; }
 
-.login-screen {
-  position: fixed; inset: 0;
-  background: linear-gradient(135deg, #0f0c29 0%, #1a1040 30%, #24243e 60%, #0f2027 100%);
-  z-index: 500;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 24px;
-  gap: 24px;
-}
-.login-logo {
-  width: 80px; height: 80px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 24px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 2.5rem;
-}
-.login-title {
-  font-size: 1.8rem;
-  font-weight: 800;
-  color: var(--text);
-  text-align: center;
-}
+.login-screen { position: fixed; inset: 0; background: linear-gradient(135deg, #0f0c29 0%, #1a1040 30%, #24243e 60%, #0f2027 100%); z-index: 500; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 24px; gap: 24px; }
+.login-logo { width: 80px; height: 80px; background: var(--surface); border: 1px solid var(--border); border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
+.login-title { font-size: 1.8rem; font-weight: 800; color: var(--text); text-align: center; }
 .login-title span { color: var(--accent); }
-.login-sub {
-  font-size: 0.9rem;
-  color: var(--muted);
-  text-align: center;
-  opacity: 0.7;
-  max-width: 280px;
-  line-height: 1.5;
-}
-.btn-google {
-  background: #fff;
-  color: #1a1a1a;
-  border: none;
-  border-radius: 14px;
-  padding: 15px 28px;
-  font-family: 'Inter', sans-serif;
-  font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-  width: 100%;
-  max-width: 320px;
-  justify-content: center;
-}
-.login-note {
-  font-size: 0.75rem;
-  color: var(--muted);
-  opacity: 0.5;
-  text-align: center;
-}
-/* USER HEADER */
-.user-info {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-}
-.user-avatar {
-  width: 28px; height: 28px;
-  border-radius: 50%;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  object-fit: cover;
-}
-.user-menu {
-  position: absolute;
-  top: 40px; right: 0;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
-  z-index: 100;
-  min-width: 160px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-  display: none;
-}
+.login-sub { font-size: 0.9rem; color: var(--muted); text-align: center; opacity: 0.7; max-width: 280px; line-height: 1.5; }
+.btn-google { background: #fff; color: #1a1a1a; border: none; border-radius: 14px; padding: 15px 28px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 1rem; cursor: pointer; display: flex; align-items: center; gap: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.3); width: 100%; max-width: 320px; justify-content: center; }
+.login-note { font-size: 0.75rem; color: var(--muted); opacity: 0.5; text-align: center; }
+.user-info { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.user-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--surface2); border: 1px solid var(--border); object-fit: cover; }
+.user-menu { position: absolute; top: 40px; right: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; z-index: 100; min-width: 160px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); display: none; }
 .user-menu.open { display: block; }
-.user-menu-item {
-  padding: 13px 16px;
-  font-size: 0.88rem;
-  font-weight: 500;
-  cursor: pointer;
-  color: var(--text2);
-  border-bottom: 1px solid var(--border);
-}
+.user-menu-item { padding: 13px 16px; font-size: 0.88rem; font-weight: 500; cursor: pointer; color: var(--text2); border-bottom: 1px solid var(--border); }
 .user-menu-item:last-child { border-bottom: none; }
 .user-menu-item:hover { background: var(--surface2); }
 .user-menu-item.logout { color: var(--red); }
-
-.btn-close {
-  width: 100%; background: var(--surface2); border: 1px solid var(--border);
-  border-radius: 12px; color: var(--muted); font-family: 'Inter', sans-serif;
-  font-weight: 600; padding: 13px; cursor: pointer; font-size: 0.95rem;
-}
+.btn-close { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; color: var(--muted); font-family: 'Inter', sans-serif; font-weight: 600; padding: 13px; cursor: pointer; font-size: 0.95rem; }
 .name-modal-inner { text-align: center; padding: 8px 0 4px; }
 .name-modal-inner p { font-size: 0.9rem; color: var(--muted); margin-bottom: 16px; }
 .name-modal-inner input { text-align: center; font-size: 1rem; margin-bottom: 14px; }
-.btn-save-name {
-  width: 100%; background: var(--accent); color: #000;
-  border: none; border-radius: 12px; padding: 14px;
-  font-family: 'Inter', sans-serif; font-weight: 700; font-size: 1rem; cursor: pointer;
-}
+.btn-save-name { width: 100%; background: var(--accent); color: #000; border: none; border-radius: 12px; padding: 14px; font-family: 'Inter', sans-serif; font-weight: 700; font-size: 1rem; cursor: pointer; }
 </style>
 </head>
 <body class="theme-dark">
 
-<!-- LOGIN SCREEN -->
 <div id="loginScreen" style="display:none">
   <div class="login-screen">
     <div class="login-logo">💰</div>
     <div class="login-title">Minhas <span>Finanças</span></div>
     <div class="login-sub">Seus dados salvos na nuvem, acessíveis em qualquer celular</div>
-    
     <div id="loginForm" style="width:100%;max-width:320px;display:flex;flex-direction:column;gap:10px">
       <input type="email" id="authEmail" placeholder="Seu email" style="width:100%;text-align:center" />
       <input type="password" id="authPassword" placeholder="Sua senha" style="width:100%;text-align:center" />
-      <button class="btn-google" onclick="loginEmail()" style="background:var(--accent);color:#000;font-family:Inter,sans-serif;font-weight:700;border-radius:14px;padding:15px;border:none;cursor:pointer;font-size:1rem">
-        Entrar
-      </button>
-      <button onclick="toggleRegister()" style="background:none;border:none;color:var(--muted);font-size:0.85rem;cursor:pointer;text-decoration:underline" id="toggleBtn">
-        Não tem conta? Cadastrar
-      </button>
+      <button class="btn-google" onclick="loginEmail()" style="background:var(--accent);color:#000;font-family:Inter,sans-serif;font-weight:700;border-radius:14px;padding:15px;border:none;cursor:pointer;font-size:1rem">Entrar</button>
+      <button onclick="toggleRegister()" style="background:none;border:none;color:var(--muted);font-size:0.85rem;cursor:pointer;text-decoration:underline" id="toggleBtn">Não tem conta? Cadastrar</button>
       <div id="authMsg" style="font-size:0.8rem;text-align:center;color:var(--red);display:none"></div>
     </div>
     <div class="login-note">Seus dados ficam protegidos e privados</div>
@@ -807,9 +316,7 @@ body.theme-gradient .cat-item:hover {
 <header>
   <div class="header-left">
     <div class="greeting">Olá,</div>
-    <div class="username" onclick="openNameModal()">
-      <span id="nameSpan">Meu App</span> <span>·</span>
-    </div>
+    <div class="username" onclick="openNameModal()"><span id="nameSpan">Meu App</span> <span>·</span></div>
   </div>
   <div class="header-right">
     <div class="month-nav">
@@ -820,15 +327,9 @@ body.theme-gradient .cat-item:hover {
     <div style="position:relative">
       <div class="theme-btn" onclick="toggleThemeMenu()">🎨</div>
       <div class="theme-menu" id="themeMenu">
-        <div class="theme-opt" onclick="setTheme('theme-dark')" id="opt-dark">
-          <div class="theme-dot" style="background:#0a0a0a;border:1px solid #444"></div> Escuro
-        </div>
-        <div class="theme-opt" onclick="setTheme('theme-bege')" id="opt-bege">
-          <div class="theme-dot" style="background:#f0ebe0;border:1px solid #ccc"></div> Claro
-        </div>
-        <div class="theme-opt" onclick="setTheme('theme-gradient')" id="opt-gradient">
-          <div class="theme-dot" style="background:linear-gradient(135deg,#0f0c29,#302b63)"></div> Gradiente
-        </div>
+        <div class="theme-opt" onclick="setTheme('theme-dark')" id="opt-dark"><div class="theme-dot" style="background:#0a0a0a;border:1px solid #444"></div> Escuro</div>
+        <div class="theme-opt" onclick="setTheme('theme-bege')" id="opt-bege"><div class="theme-dot" style="background:#f0ebe0;border:1px solid #ccc"></div> Claro</div>
+        <div class="theme-opt" onclick="setTheme('theme-gradient')" id="opt-gradient"><div class="theme-dot" style="background:linear-gradient(135deg,#0f0c29,#302b63)"></div> Gradiente</div>
       </div>
     </div>
     <div style="position:relative">
@@ -857,28 +358,22 @@ body.theme-gradient .cat-item:hover {
 <div class="sec-label">Resumo rápido</div>
 <div class="preview-cards">
   <div class="pcard gastos" onclick="openModal('expense')">
-    <div class="pcard-bar"></div>
-    <div class="pcard-title">Gastos</div>
+    <div class="pcard-bar"></div><div class="pcard-title">Gastos</div>
     <div class="pcard-total" id="pcardExpTotal">R$ 0</div>
-    <div class="pcard-items" id="pcardExpItems"></div>
-    <div class="pcard-more">ver todos →</div>
+    <div class="pcard-items" id="pcardExpItems"></div><div class="pcard-more">ver todos →</div>
   </div>
   <div class="pcard ganhos" onclick="openModal('income')">
-    <div class="pcard-bar"></div>
-    <div class="pcard-title">Ganhos</div>
+    <div class="pcard-bar"></div><div class="pcard-title">Ganhos</div>
     <div class="pcard-total" id="pcardIncTotal">R$ 0</div>
-    <div class="pcard-items" id="pcardIncItems"></div>
-    <div class="pcard-more">ver todos →</div>
+    <div class="pcard-items" id="pcardIncItems"></div><div class="pcard-more">ver todos →</div>
   </div>
 </div>
 
 <div class="preview-cards-row2">
   <div class="pcard previsto" onclick="openModal('planned')" style="width:100%">
-    <div class="pcard-bar"></div>
-    <div class="pcard-title">Previsto para o mês</div>
+    <div class="pcard-bar"></div><div class="pcard-title">Previsto para o mês</div>
     <div class="pcard-total" id="pcardPlanTotal">R$ 0</div>
-    <div class="pcard-items" id="pcardPlanItems"></div>
-    <div class="pcard-more">ver todos →</div>
+    <div class="pcard-items" id="pcardPlanItems"></div><div class="pcard-more">ver todos →</div>
   </div>
 </div>
 
@@ -896,8 +391,7 @@ body.theme-gradient .cat-item:hover {
   </div>
   <div class="irow">
     <div class="cat-wrap">
-      <input type="text" id="catInput" placeholder="Categoria (digita ou escolhe)"
-        autocomplete="off" oninput="onCatInput()" onfocus="onCatFocus()" onblur="onCatBlur()" />
+      <input type="text" id="catInput" placeholder="Categoria (digita ou escolhe)" autocomplete="off" oninput="onCatInput()" onfocus="onCatFocus()" onblur="onCatBlur()" />
       <div class="cat-suggestions" id="catSug"></div>
     </div>
     <button class="btn-add" onclick="addItem()">Adicionar</button>
@@ -916,20 +410,18 @@ body.theme-gradient .cat-item:hover {
 <div class="fixed-list" id="fixedTags"></div>
 <div class="manage-btn" onclick="openFixedModal()">⚙ Gerenciar gastos fixos</div>
 
-<div class="export-row">
-  <div class="export-btn" onclick="exportData()">⬇ Exportar dados</div>
-  <label class="export-btn">
-    ⬆ Importar
-    <input type="file" accept=".json" onchange="importData(event)" style="display:none">
-  </label>
-</div>
-
 <div class="divider"></div>
 <div style="height:8px"></div>
 <div class="sec-label">Movimentações</div>
 <div class="moves-list" id="movesList"></div>
 
-<!-- MODAL: transações -->
+<!-- IMPORTAR / EXPORTAR — agora no fim, depois de Movimentações -->
+<div style="height:18px"></div>
+<div class="export-row">
+  <div class="export-btn" onclick="exportData()">⬇ Exportar dados</div>
+  <label class="export-btn">⬆ Importar<input type="file" accept=".json" onchange="importData(event)" style="display:none"></label>
+</div>
+
 <div class="modal-overlay" id="txModal" style="display:none" onclick="closeTxOutside(event)">
   <div class="modal">
     <div class="modal-head">
@@ -937,16 +429,16 @@ body.theme-gradient .cat-item:hover {
       <div class="modal-close" onclick="closeTxModal()">×</div>
     </div>
     <div class="modal-items" id="txModalList"></div>
+    <div class="modal-total" id="txModalTotal" style="display:none">
+      <span class="lbl">Total previsto</span>
+      <span class="val" id="txModalTotalVal">R$ 0</span>
+    </div>
   </div>
 </div>
 
-<!-- MODAL: fixos -->
 <div class="modal-overlay" id="fixedModal" style="display:none" onclick="closeFixedOutside(event)">
   <div class="modal">
-    <div class="modal-head">
-      <h2>Gastos Fixos</h2>
-      <div class="modal-close" onclick="closeFixedModal()">×</div>
-    </div>
+    <div class="modal-head"><h2>Gastos Fixos</h2><div class="modal-close" onclick="closeFixedModal()">×</div></div>
     <div class="modal-row">
       <input type="text" id="fixedDescIn" placeholder="Ex: Aluguel, Internet..." />
       <input type="number" id="fixedValIn" placeholder="R$" inputmode="decimal" style="max-width:90px" />
@@ -957,13 +449,9 @@ body.theme-gradient .cat-item:hover {
   </div>
 </div>
 
-<!-- MODAL: nome -->
 <div class="modal-overlay" id="nameModal" style="display:none" onclick="closeNameOutside(event)">
   <div class="modal">
-    <div class="modal-head">
-      <h2>Seu nome no app</h2>
-      <div class="modal-close" onclick="closeNameModal()">×</div>
-    </div>
+    <div class="modal-head"><h2>Seu nome no app</h2><div class="modal-close" onclick="closeNameModal()">×</div></div>
     <div class="name-modal-inner">
       <p>Aparece no cabeçalho do app</p>
       <input type="text" id="nameInput" placeholder="Ex: Jetro" maxlength="20" />
@@ -972,7 +460,6 @@ body.theme-gradient .cat-item:hover {
   </div>
 </div>
 
-<!-- MODAL: confirmar exclusão -->
 <div class="confirm-overlay" id="confirmOverlay" style="display:none">
   <div class="confirm-box">
     <h3>Apagar lançamento?</h3>
@@ -1068,37 +555,31 @@ function renderSug(list) {
 function pickCat(c) { document.getElementById('catInput').value=c; document.getElementById('catSug').classList.remove('open'); }
 function delCatUI(c) { delCat(c); renderSug(getAllCats()); }
 
-// ─────────────────────────────────────────────
-// SUPABASE: INSERT individual (retorna sbid UUID)
-// ─────────────────────────────────────────────
 async function insertToSupabase(item) {
   if (!currentUser) return null;
   const row = {
-    user_id: currentUser.id,
-    tipo: item.type,
-    descricao: item.desc,
-    valor: item.val,
-    categoria: item.cat || '',
-    data: item.date || '',
-    data_prevista: item.plannedDate || '',
-    ano: vYear,
-    mes: vMonth
+    user_id: currentUser.id, tipo: item.type, descricao: item.desc, valor: item.val,
+    categoria: item.cat || '', data: item.date || '', data_prevista: item.plannedDate || '',
+    ano: vYear, mes: vMonth
   };
   const { data, error } = await sb.from('lancamentos').insert(row).select().single();
   if (error) { console.error('Erro ao inserir no Supabase:', error); return null; }
   return data?.id ?? null;
 }
 
-// ─────────────────────────────────────────────
-// SUPABASE: DELETE individual pelo UUID (sbid)
-// ─────────────────────────────────────────────
-async function deleteFromSupabase(sbid) {
-  if (!currentUser || !sbid) return;
-  const { error } = await sb.from('lancamentos')
-    .delete()
-    .eq('user_id', currentUser.id)
-    .eq('id', sbid);
-  if (error) console.error('Erro ao deletar do Supabase:', error);
+async function deleteFromSupabase(item) {
+  if (!currentUser || !item) return;
+  if (item.sbid) {
+    const { error } = await sb.from('lancamentos').delete().eq('user_id', currentUser.id).eq('id', item.sbid);
+    if (error) console.error('Erro ao deletar (sbid):', error);
+    return;
+  }
+  // Fallback para itens antigos sem sbid: deleta por campos
+  const { error } = await sb.from('lancamentos').delete()
+    .eq('user_id', currentUser.id).eq('tipo', item.type)
+    .eq('descricao', item.desc).eq('valor', item.val)
+    .eq('ano', vYear).eq('mes', vMonth);
+  if (error) console.error('Erro ao deletar (campos):', error);
 }
 
 function addItem() {
@@ -1114,7 +595,6 @@ function addItem() {
   items.unshift(newItem);
   saveItems(items);
   render();
-  // Inserir individualmente no Supabase e salvar o UUID retornado como sbid
   insertToSupabase(newItem).then(sbid => {
     if (sbid) {
       const current = getItems();
@@ -1126,6 +606,7 @@ function addItem() {
   document.getElementById('valInput').value='';
   document.getElementById('catInput').value='';
   document.getElementById('plannedDate').value='';
+  document.getElementById('dateLbl').style.opacity='1';
 }
 
 function delItem(id) { askDelete(String(id), "modal"); }
@@ -1148,7 +629,6 @@ function launchFixed(idx) {
   items.unshift(newFixed);
   saveItems(items);
   render();
-  // Inserir individualmente no Supabase e salvar o UUID retornado como sbid
   insertToSupabase(newFixed).then(sbid => {
     if (sbid) {
       const current = getItems();
@@ -1174,6 +654,7 @@ function delFixed(idx) { const arr=getFixed(); arr.splice(idx,1); saveFixed(arr)
 function openModal(type) { curTxType=type; renderTxModal(); document.getElementById('txModal').style.display='flex'; }
 function closeTxModal() { document.getElementById('txModal').style.display='none'; }
 function closeTxOutside(e) { if(e.target.id==='txModal') closeTxModal(); }
+
 function renderTxModal() {
   const items=getItems().filter(i=>i.type===curTxType);
   const isExp=curTxType==='expense';
@@ -1181,10 +662,52 @@ function renderTxModal() {
   const title=document.getElementById('txModalTitle');
   title.textContent=(isExp?'Gastos':isPlan?'Previsto para o mês':'Ganhos')+' — '+MONTHS[vMonth].slice(0,3)+' '+vYear;
   title.className=isExp?'red':isPlan?'accent':'green';
+
   const list=document.getElementById('txModalList');
-  if(!items.length){list.innerHTML='<div class="empty">Nenhum lançamento</div>';return;}
-  const dotClass=isExp?'r':isPlan?'y':'g'; const valClass=isExp?'r':isPlan?'y':'g'; const prefix=isExp?'-':isPlan?'':'+';
-  list.innerHTML=items.map(i=>`<div class="modal-item"><div class="modal-item-l"><div class="modal-dot ${dotClass}"></div><div class="modal-item-info"><div class="desc">${i.desc}</div><div class="meta">${i.cat||''}${i.cat&&i.date?' · ':''}${i.date||''}${isPlan&&i.plannedDate?' 📅 '+formatDateBR(i.plannedDate):''}</div></div></div><div class="modal-item-r">${isPlan&&i.plannedDate?`<button class="btn-cal" onclick="addToCalendar('${i.desc}',${i.val},'${i.plannedDate}')">📅</button>`:''}<span class="modal-item-val ${valClass}">${prefix} ${fmt(i.val)}</span><button class="btn-del-item" onclick="delItem(${i.id})">×</button></div></div>`).join('');
+  const totalBox=document.getElementById('txModalTotal');
+
+  if(!items.length){
+    list.innerHTML='<div class="empty">Nenhum lançamento</div>';
+    totalBox.style.display='none';
+    return;
+  }
+
+  const dotClass=isExp?'r':isPlan?'y':'g';
+  const valClass=isExp?'r':isPlan?'y':'g';
+  const prefix=isExp?'-':isPlan?'':'+';
+
+  list.innerHTML=items.map(i=>{
+    // PREVISTO: mostra SÓ a data prevista (não a data de lançamento)
+    let meta;
+    if(isPlan){
+      const dataParte = i.plannedDate ? '📅 ' + formatDateBR(i.plannedDate) : 'Sem data';
+      meta = (i.cat||'') + (i.cat?' · ':'') + dataParte;
+    } else {
+      meta = (i.cat||'') + (i.cat&&i.date?' · ':'') + (i.date||'');
+    }
+    const calBtn = (isPlan && i.plannedDate)
+      ? `<button class="btn-cal" onclick="addToCalendar('${i.desc.replace(/'/g,"\\'")}',${i.val},'${i.plannedDate}')">📅</button>`
+      : '';
+    return `<div class="modal-item">
+      <div class="modal-item-l">
+        <div class="modal-dot ${dotClass}"></div>
+        <div class="modal-item-info"><div class="desc">${i.desc}</div><div class="meta">${meta}</div></div>
+      </div>
+      <div class="modal-item-r">
+        ${calBtn}
+        <span class="modal-item-val ${valClass}">${prefix} ${fmt(i.val)}</span>
+        <button class="btn-del-item" onclick="delItem('${String(i.id).replace(/'/g,"\\'")}')">×</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  if(isPlan){
+    const total = items.reduce((s,i)=>s+i.val,0);
+    document.getElementById('txModalTotalVal').textContent = fmt(total);
+    totalBox.style.display='flex';
+  } else {
+    totalBox.style.display='none';
+  }
 }
 
 function openFixedModal() { renderFixedModal(); document.getElementById('fixedModal').style.display='flex'; }
@@ -1262,6 +785,7 @@ function render() {
   };
   renderPC(expenses,'pcardExpItems');
   renderPC(incomes,'pcardIncItems');
+
   const planTotal=planned.reduce((s,i)=>s+i.val,0);
   document.getElementById('pcardPlanTotal').textContent=fmt(planTotal);
   const pcPlan=document.getElementById('pcardPlanItems');
@@ -1272,15 +796,12 @@ function render() {
   const ml=document.getElementById('movesList');
   if(!moveItems.length){ml.innerHTML='<div class="empty">Nenhum lançamento neste mês</div>';}
   else {
-    ml.innerHTML=moveItems.map(i=>`<div class="move-item"><div class="move-left"><div class="move-dot ${i.type==='income'?'inc':'exp'}"></div><div><div class="move-desc">${i.desc}</div><div class="move-meta">${i.cat||''}${i.cat&&i.date?' · ':''}${i.date||''}</div></div></div><div class="move-right"><span class="move-val ${i.type==='income'?'inc':'exp'}">${i.type==='income'?'+':'-'} ${fmt(i.val)}</span><button class="btn-del-move" onclick="delMove(${i.id})">×</button></div></div>`).join('');
+    ml.innerHTML=moveItems.map(i=>`<div class="move-item"><div class="move-left"><div class="move-dot ${i.type==='income'?'inc':'exp'}"></div><div><div class="move-desc">${i.desc}</div><div class="move-meta">${i.cat||''}${i.cat&&i.date?' · ':''}${i.date||''}</div></div></div><div class="move-right"><span class="move-val ${i.type==='income'?'inc':'exp'}">${i.type==='income'?'+':'-'} ${fmt(i.val)}</span><button class="btn-del-move" onclick="delMove('${String(i.id).replace(/'/g,"\\'")}')">×</button></div></div>`).join('');
   }
 
   renderFixedTags();
 }
 
-// ─────────────────────────────────────────────
-// DELETE com confirmação
-// ─────────────────────────────────────────────
 let pendingDeleteId = null;
 let pendingDeleteSource = null;
 
@@ -1289,38 +810,38 @@ function askDelete(id, source) {
   pendingDeleteSource = source;
   document.getElementById('confirmOverlay').style.display = 'flex';
 }
-
 function confirmCancel() {
   pendingDeleteId = null;
   pendingDeleteSource = null;
   document.getElementById('confirmOverlay').style.display = 'none';
 }
-
 async function confirmDelete() {
   document.getElementById('confirmOverlay').style.display = 'none';
-  if (pendingDeleteId === null) return;
+  if (pendingDeleteId === null || pendingDeleteId === undefined) return;
 
+  const targetId = String(pendingDeleteId);
   const allItems = getItems();
-  const item = allItems.find(i => String(i.id) === String(pendingDeleteId));
 
-  // Deletar do Supabase pelo UUID real (sbid), não pelo id local
-  if (currentUser && item && item.sbid) {
-    await deleteFromSupabase(item.sbid);
-  }
+  // Encontra o item alvo comparando SEMPRE como string (evita string vs número)
+  const item = allItems.find(i => String(i.id) === targetId);
 
-  // Remover do localStorage
-  const newItems = allItems.filter(i => String(i.id) !== String(pendingDeleteId));
+  // 1. Remoção robusta do localStorage — filtra por id normalizado em string
+  const newItems = allItems.filter(i => String(i.id) !== targetId);
   saveItems(newItems);
+
+  // 2. Re-renderiza TUDO imediatamente (tela inicial, modal aberto, fixos)
   render();
-  if (pendingDeleteSource === 'modal') renderTxModal();
+  renderTxModal();
+  renderFixedTags();
+  renderFixedModal();
+
+  // 3. Deleta do Supabase (robusto: por sbid/UUID ou por campos)
+  if (currentUser && item) { await deleteFromSupabase(item); }
 
   pendingDeleteId = null;
   pendingDeleteSource = null;
 }
 
-// ─────────────────────────────────────────────
-// SUPABASE AUTH & LOAD
-// ─────────────────────────────────────────────
 const SUPABASE_URL = 'https://xqwtofggidvonlefdgfm.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhxd3RvZmdnaWR2b25sZWZkZ2ZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2OTA5MjIsImV4cCI6MjA5NjI2NjkyMn0.3GVttSNmy1Vb8kjbLBOUp-AwIazXjOc_qmMo8oOVbew';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -1335,14 +856,10 @@ function toggleRegister() {
   if(btn) btn.textContent = isRegisterMode ? 'Cadastrar' : 'Entrar';
   document.getElementById('authMsg').style.display = 'none';
 }
-
 function showAuthMsg(msg, color) {
   const el = document.getElementById('authMsg');
-  el.textContent = msg;
-  el.style.color = color || 'var(--red)';
-  el.style.display = 'block';
+  el.textContent = msg; el.style.color = color || 'var(--red)'; el.style.display = 'block';
 }
-
 async function loginEmail() {
   const email = document.getElementById('authEmail').value.trim();
   const password = document.getElementById('authPassword').value;
@@ -1359,7 +876,6 @@ async function loginEmail() {
     if (data?.user) await setUserSession(data.user);
   }
 }
-
 async function logout() {
   await sb.auth.signOut();
   currentUser = null;
@@ -1367,11 +883,7 @@ async function logout() {
   document.getElementById('userBtn').style.display = 'none';
   document.getElementById('userMenu').classList.remove('open');
 }
-
-function toggleUserMenu() {
-  document.getElementById('userMenu').classList.toggle('open');
-}
-
+function toggleUserMenu() { document.getElementById('userMenu').classList.toggle('open'); }
 document.addEventListener('click', e => {
   if (!e.target.closest('.user-info') && !e.target.closest('.user-menu'))
     document.getElementById('userMenu').classList.remove('open');
@@ -1379,22 +891,12 @@ document.addEventListener('click', e => {
 
 async function loadFromSupabase() {
   if (!currentUser) return;
-  const { data, error } = await sb.from('lancamentos')
-    .select('*')
-    .eq('user_id', currentUser.id)
-    .eq('ano', vYear)
-    .eq('mes', vMonth);
-  if (error || !data) return;
-  // Preservar sbid = id do Supabase (UUID) e usar como referência para deletes futuros
+  const { data, error } = await sb.from('lancamentos').select('*')
+    .eq('user_id', currentUser.id).eq('ano', vYear).eq('mes', vMonth);
+  if (error || !data) { render(); return; }
   const items = data.map(r => ({
-    id: r.id,       // id local = UUID do Supabase (para itens carregados da nuvem)
-    sbid: r.id,     // sbid = UUID do Supabase (sempre presente)
-    type: r.tipo,
-    desc: r.descricao,
-    val: parseFloat(r.valor),
-    cat: r.categoria,
-    date: r.data,
-    plannedDate: r.data_prevista
+    id: r.id, sbid: r.id, type: r.tipo, desc: r.descricao,
+    val: parseFloat(r.valor), cat: r.categoria, date: r.data, plannedDate: r.data_prevista
   }));
   saveItems(items);
   render();
