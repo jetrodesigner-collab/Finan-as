@@ -557,14 +557,21 @@ function pickCat(c) { document.getElementById('catInput').value=c; document.getE
 function delCatUI(c) { delCat(c); renderSug(getAllCats()); }
 
 async function insertToSupabase(item) {
-  if (!currentUser) return null;
+  // Pega a sessão ATIVA do Supabase no momento (não confia só na variável global)
+  const { data: { session } } = await sb.auth.getSession();
+  const uid = session?.user?.id || (currentUser && currentUser.id);
+  if (!uid) { console.warn('insertToSupabase: sem usuário/sessão ativa'); return null; }
   const row = {
-    user_id: currentUser.id, tipo: item.type, descricao: item.desc, valor: item.val,
+    user_id: uid, tipo: item.type, descricao: item.desc, valor: item.val,
     categoria: item.cat || '', data: item.date || '', data_prevista: item.plannedDate || '',
     ano: vYear, mes: vMonth
   };
   const { data, error } = await sb.from('lancamentos').insert(row).select().single();
-  if (error) { console.error('Erro ao inserir no Supabase:', error); return null; }
+  if (error) {
+    console.error('Erro ao inserir no Supabase:', error.message, error);
+    alert('Não foi possível salvar na nuvem: ' + error.message);
+    return null;
+  }
   return data?.id ?? null;
 }
 
@@ -861,7 +868,14 @@ async function confirmDelete() {
 
 const SUPABASE_URL = 'https://xqwtofggidvonlefdgfm.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhxd3RvZmdnaWR2b25sZWZkZ2ZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2OTA5MjIsImV4cCI6MjA5NjI2NjkyMn0.3GVttSNmy1Vb8kjbLBOUp-AwIazXjOc_qmMo8oOVbew';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: false,
+    storageKey: 'fin_supabase_auth'
+  }
+});
 
 let currentUser = null;
 let isRegisterMode = false;
