@@ -1054,6 +1054,7 @@ function addItem() {
   const items=getItems();
   items.unshift({id:Date.now(),type:curType,desc,val,cat,date:new Date().toLocaleDateString('pt-BR'),plannedDate});
   saveItems(items);
+  syncToSupabase(items);
   document.getElementById('descInput').value='';
   document.getElementById('valInput').value='';
   document.getElementById('catInput').value='';
