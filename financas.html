@@ -1267,16 +1267,15 @@ function confirmCancel() {
 async function confirmDelete() {
   document.getElementById('confirmOverlay').style.display = 'none';
   if(pendingDeleteId === null) return;
+  // Delete from Supabase first
+  if (currentUser) {
+    await sb.from('lancamentos').delete().eq('user_id', currentUser.id).eq('id', String(pendingDeleteId));
+  }
+  // Then update local
   const newItems = getItems().filter(i=>String(i.id)!==String(pendingDeleteId));
   saveItems(newItems);
   render();
   if(pendingDeleteSource === 'modal') renderTxModal();
-  // Delete from Supabase
-  if (currentUser) {
-    await sb.from('lancamentos').delete().eq('user_id', currentUser.id).eq('id', pendingDeleteId);
-    // Reload to make sure local matches Supabase
-    await loadFromSupabase();
-  }
   pendingDeleteId = null;
   pendingDeleteSource = null;
 }
