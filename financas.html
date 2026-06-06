@@ -816,13 +816,6 @@ body.theme-gradient
 <body class="theme-dark">
 
 
-<!-- LOADING SCREEN -->
-<div id="loadingScreen" style="display:flex">
-  <div class="loading-screen">
-    <div class="loading-spinner"></div>
-    <div class="loading-text">Carregando...</div>
-  </div>
-</div>
 
 <!-- LOGIN SCREEN -->
 <div id="loginScreen" style="display:none">
@@ -1382,42 +1375,34 @@ async function loadFromSupabase() {
 async function setUserSession(user) {
   currentUser = user;
   document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('loadingScreen').style.display = 'flex';
-  
-  // Restore saved name
   const savedName = LS('fin_name', '');
   if (savedName) document.getElementById('nameSpan').textContent = savedName;
-  
-  const avatar = document.getElementById('userAvatar');
-  avatar.src = currentUser.user_metadata?.avatar_url || '';
   document.getElementById('userBtn').style.display = 'flex';
   document.getElementById('userEmail').textContent = currentUser.email;
-  
-  // Load data from Supabase
-  await loadFromSupabase();
-  document.getElementById('loadingScreen').style.display = 'none';
+  render();
+  loadFromSupabase();
 }
 
 async function initAuth() {
-  document.getElementById('loadingScreen').style.display = 'flex';
-  document.getElementById('loginScreen').style.display = 'none';
-
-  try {
-    const { data: { session } } = await sb.auth.getSession();
-    if (session?.user) {
-      await setUserSession(session.user);
-      document.getElementById('loadingScreen').style.display = 'none';
-      return;
-    }
-  } catch(e) {}
-
-  document.getElementById('loadingScreen').style.display = 'none';
-  document.getElementById('loginScreen').style.display = 'flex';
+  // Don't show login screen yet - wait for session check
+  const { data: { session } } = await sb.auth.getSession();
+  if (session?.user) {
+    currentUser = session.user;
+    const savedName = LS('fin_name', '');
+    if (savedName) document.getElementById('nameSpan').textContent = savedName;
+    document.getElementById('userBtn').style.display = 'flex';
+    document.getElementById('userEmail').textContent = currentUser.email;
+    render();
+    loadFromSupabase();
+  } else {
+    // Only show login if confirmed no session
+    document.getElementById('loginScreen').style.display = 'flex';
+  }
 }
 
 sb.auth.onAuthStateChange(async (event, session) => {
   if (event === 'SIGNED_IN' && session?.user && !currentUser) {
-    await setUserSession(session.user);
+    setUserSession(session.user);
   }
 });
 
