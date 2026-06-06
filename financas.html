@@ -1267,12 +1267,16 @@ function confirmCancel() {
 async function confirmDelete() {
   document.getElementById('confirmOverlay').style.display = 'none';
   if(pendingDeleteId === null) return;
-  // Delete from Supabase first
-  if (currentUser) {
-    await sb.from('lancamentos').delete().eq('user_id', currentUser.id).eq('id', String(pendingDeleteId));
+  // Find the item to get its Supabase ID
+  const allItems = getItems();
+  const item = allItems.find(i => String(i.id) === String(pendingDeleteId));
+  // Delete from Supabase
+  if (currentUser && item) {
+    const sbId = item.sbid || item.id;
+    await sb.from('lancamentos').delete().eq('user_id', currentUser.id).eq('id', String(sbId));
   }
-  // Then update local
-  const newItems = getItems().filter(i=>String(i.id)!==String(pendingDeleteId));
+  // Update local
+  const newItems = allItems.filter(i => String(i.id) !== String(pendingDeleteId));
   saveItems(newItems);
   render();
   if(pendingDeleteSource === 'modal') renderTxModal();
@@ -1372,6 +1376,7 @@ async function loadFromSupabase() {
   if (error || !data) return;
   const items = data.map(r => ({
     id: r.id,
+    sbid: r.id,
     type: r.tipo,
     desc: r.descricao,
     val: parseFloat(r.valor),
