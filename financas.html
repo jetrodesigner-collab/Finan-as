@@ -405,9 +405,10 @@ body.theme-gradient .cat-item:hover { background: rgba(255,255,255,0.1); }
 <div class="divider"></div>
 <div class="sec-label-row">
   <span class="lbl">Gastos Fixos</span>
-  <span class="hint">toque para lançar</span>
+  <span class="hint" id="fixedHint">toque para lançar</span>
 </div>
-<div class="fixed-list" id="fixedTags"></div>
+<div class="manage-btn" id="toggleFixedBtn" onclick="toggleFixedList()">👁 Veja os gastos fixos</div>
+<div class="fixed-list" id="fixedTags" style="display:none"></div>
 <div class="manage-btn" onclick="openFixedModal()">⚙ Gerenciar gastos fixos</div>
 
 <div class="divider"></div>
@@ -621,14 +622,18 @@ async function changeMonth(d) {
 }
 
 function launchFixed(idx) {
-  const f=getFixed()[idx]; if(!f) return;
-  const used=getUsed(); if(used.includes(idx)) return;
+  const arr = getFixed();
+  const f = arr[idx]; if(!f) return;
   const localId = Date.now();
   const newFixed = {id:localId, type:'expense', desc:f.desc+' (fixo)', val:f.val, cat:'Fixo', date:new Date().toLocaleDateString('pt-BR')};
   const items=getItems();
   items.unshift(newFixed);
   saveItems(items);
+  // Remove o fixo da lista de fixos (some de vez, sem traço)
+  arr.splice(idx,1);
+  saveFixed(arr);
   render();
+  renderFixedTags();
   insertToSupabase(newFixed).then(sbid => {
     if (sbid) {
       const current = getItems();
@@ -636,8 +641,6 @@ function launchFixed(idx) {
       if (idx2 !== -1) { current[idx2].sbid = sbid; saveItems(current); }
     }
   });
-  used.push(idx);
-  saveUsed(used);
 }
 
 function addFixed() {
@@ -721,10 +724,24 @@ function renderFixedModal() {
 }
 
 function renderFixedTags() {
-  const arr=getFixed(),used=getUsed();
+  const arr=getFixed();
   const el=document.getElementById('fixedTags');
   if(!arr.length){el.innerHTML='<div class="empty" style="padding:0 0 6px">Nenhum fixo cadastrado ainda</div>';return;}
-  el.innerHTML=arr.map((f,i)=>`<div class="fixed-tag ${used.includes(i)?'done':''}" onclick="launchFixed(${i})"><span class="fn">${used.includes(i)?'✓ ':''}${f.desc}</span><span class="fv">${fmt(f.val)}</span></div>`).join('');
+  el.innerHTML=arr.map((f,i)=>`<div class="fixed-tag" onclick="launchFixed(${i})"><span class="fn">${f.desc}</span><span class="fv">${fmt(f.val)}</span></div>`).join('');
+}
+
+function toggleFixedList() {
+  const list = document.getElementById('fixedTags');
+  const btn = document.getElementById('toggleFixedBtn');
+  const isHidden = list.style.display === 'none';
+  if (isHidden) {
+    renderFixedTags();
+    list.style.display = 'flex';
+    btn.textContent = '🙈 Esconder gastos fixos';
+  } else {
+    list.style.display = 'none';
+    btn.textContent = '👁 Veja os gastos fixos';
+  }
 }
 
 function exportData() {
