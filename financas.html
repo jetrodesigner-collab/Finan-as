@@ -1111,8 +1111,8 @@ function addItem() {
   document.getElementById('catInput').value='';
   document.getElementById('plannedDate').value='';
 }
-function delItem(id) { askDelete(id, "modal"); }
-function delMove(id) { askDelete(id, "list"); }
+function delItem(id) { askDelete(String(id), "modal"); }
+function delMove(id) { askDelete(String(id), "list"); }
 
 async function changeMonth(d) {
   vMonth+=d;
@@ -1267,9 +1267,11 @@ function confirmCancel() {
 function confirmDelete() {
   document.getElementById('confirmOverlay').style.display = 'none';
   if(pendingDeleteId === null) return;
-  const newItems = getItems().filter(i=>i.id!==pendingDeleteId);
+  const newItems = getItems().filter(i=>String(i.id)!==String(pendingDeleteId));
   saveItems(newItems);
   render();
+  // Also delete from Supabase directly
+  if (currentUser) sb.from('lancamentos').delete().eq('id', pendingDeleteId).eq('user_id', currentUser.id);
   syncToSupabase(newItems);
   if(pendingDeleteSource === 'modal') renderTxModal();
   pendingDeleteId = null;
