@@ -1332,26 +1332,33 @@ async function loadFromSupabase() {
 async function setUserSession(user) {
   currentUser = user;
   document.getElementById('loginScreen').style.display = 'none';
+  
+  // Restore saved name
+  const savedName = LS('fin_name', '');
+  if (savedName) document.getElementById('nameSpan').textContent = savedName;
+  
   const avatar = document.getElementById('userAvatar');
   avatar.src = currentUser.user_metadata?.avatar_url || '';
   document.getElementById('userBtn').style.display = 'flex';
   document.getElementById('userEmail').textContent = currentUser.email;
+  
+  // Load data from Supabase - this will render when done
   await loadFromSupabase();
 }
 
 async function initAuth() {
-  // Show login screen by default while checking
-  document.getElementById('loginScreen').style.display = 'flex';
+  // Hide app, show nothing while checking session
+  document.getElementById('loginScreen').style.display = 'none';
 
-  // Let Supabase handle the hash/code from URL automatically
-  const { data: { session }, error } = await sb.auth.getSession();
-  
-  if (session?.user) {
-    await setUserSession(session.user);
-    return;
-  }
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session?.user) {
+      await setUserSession(session.user);
+      return;
+    }
+  } catch(e) {}
 
-  // Still show login
+  // No session — show login
   document.getElementById('loginScreen').style.display = 'flex';
 }
 
@@ -1379,7 +1386,6 @@ function addToCalendar(desc, val, dateStr) {
 
 (function init(){
   setTheme(LS('fin_theme','theme-dark'));
-  const name=LS('fin_name',''); if(name) document.getElementById('nameSpan').textContent=name;
   initAuth();
 })();
 </script>
