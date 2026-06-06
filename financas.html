@@ -590,6 +590,35 @@ async function deleteFromSupabase(item) {
   if (error) console.error('Erro ao deletar (campos):', error);
 }
 
+// ───────── GASTOS FIXOS no Supabase ─────────
+async function insertFixedToSupabase(f) {
+  const { data: { session } } = await sb.auth.getSession();
+  const uid = session?.user?.id || (currentUser && currentUser.id);
+  if (!uid) return null;
+  const { data, error } = await sb.from('gastos_fixos')
+    .insert({ user_id: uid, descricao: f.desc, valor: f.val })
+    .select().single();
+  if (error) { console.error('Erro ao inserir fixo:', error.message); return null; }
+  return data?.id ?? null;
+}
+
+async function deleteFixedFromSupabase(sbid) {
+  if (!currentUser || !sbid) return;
+  const { error } = await sb.from('gastos_fixos')
+    .delete().eq('user_id', currentUser.id).eq('id', sbid);
+  if (error) console.error('Erro ao deletar fixo:', error.message);
+}
+
+async function loadFixedFromSupabase() {
+  if (!currentUser) return;
+  const { data, error } = await sb.from('gastos_fixos')
+    .select('*').eq('user_id', currentUser.id);
+  if (error || !data) return;
+  const fixos = data.map(r => ({ desc: r.descricao, val: parseFloat(r.valor), sbid: r.id }));
+  saveFixed(fixos);
+  renderFixedTags();
+}
+
 function addItem() {
   const desc=document.getElementById('descInput').value.trim();
   const val=parseFloat(document.getElementById('valInput').value);
@@ -631,6 +660,7 @@ async function changeMonth(d) {
 function launchFixed(idx) {
   const arr = getFixed();
   const f = arr[idx]; if(!f) return;
+  const fixoSbid = f.sbid;
   const localId = Date.now();
   const newFixed = {id:localId, type:'expense', desc:f.desc+' (fixo)', val:f.val, cat:'Fixo', date:new Date().toLocaleDateString('pt-BR')};
   const items=getItems();
@@ -641,6 +671,7 @@ function launchFixed(idx) {
   saveFixed(arr);
   render();
   renderFixedTags();
+  // Insere o lançamento na tabela lancamentos
   insertToSupabase(newFixed).then(sbid => {
     if (sbid) {
       const current = getItems();
@@ -648,18 +679,37 @@ function launchFixed(idx) {
       if (idx2 !== -1) { current[idx2].sbid = sbid; saveItems(current); }
     }
   });
+  // Remove o fixo da tabela gastos_fixos (já que saiu da lista)
+  if (fixoSbid) deleteFixedFromSupabase(fixoSbid);
 }
 
-function addFixed() {
+async function addFixed() {
   const desc=document.getElementById('fixedDescIn').value.trim();
   const val=parseFloat(document.getElementById('fixedValIn').value);
   if(!desc||isNaN(val)||val<=0) return;
-  const arr=getFixed(); arr.push({desc,val}); saveFixed(arr);
+  const arr=getFixed();
+  const novo={desc,val,sbid:null};
+  arr.push(novo);
+  saveFixed(arr);
   document.getElementById('fixedDescIn').value='';
   document.getElementById('fixedValIn').value='';
   renderFixedModal(); renderFixedTags();
+  // Salva no Supabase e guarda o sbid retornado
+  const sbid = await insertFixedToSupabase(novo);
+  if (sbid) {
+    const cur=getFixed();
+    const i=cur.findIndex(f=>f.desc===desc && f.val===val && !f.sbid);
+    if(i!==-1){ cur[i].sbid=sbid; saveFixed(cur); }
+  }
 }
-function delFixed(idx) { const arr=getFixed(); arr.splice(idx,1); saveFixed(arr); renderFixedModal(); renderFixedTags(); }
+function delFixed(idx) {
+  const arr=getFixed();
+  const f=arr[idx];
+  arr.splice(idx,1);
+  saveFixed(arr);
+  renderFixedModal(); renderFixedTags();
+  if (f && f.sbid) deleteFixedFromSupabase(f.sbid);
+}
 
 function openModal(type) { curTxType=type; renderTxModal(); document.getElementById('txModal').style.display='flex'; }
 function closeTxModal() { document.getElementById('txModal').style.display='none'; }
@@ -948,6 +998,7 @@ async function setUserSession(user) {
     if (savedName) document.getElementById('nameSpan').textContent = savedName;
   }
   loadFromSupabase();
+  loadFixedFromSupabase();
 }
 
 async function initAuth() {
@@ -966,6 +1017,7 @@ async function initAuth() {
       if (savedName) document.getElementById('nameSpan').textContent = savedName;
     }
     loadFromSupabase();
+    loadFixedFromSupabase();
   } else {
     document.getElementById('loginScreen').style.display = 'flex';
   }
