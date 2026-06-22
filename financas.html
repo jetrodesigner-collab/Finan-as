@@ -204,7 +204,23 @@ body.theme-gradient .cat-item:hover { background: rgba(255,255,255,0.1); }
 .fixed-tag .fv { font-size: 0.92rem; font-weight: 700; color: var(--red); }
 .fixed-tag.done { opacity: 0.35; }
 .fixed-tag.done .fn { text-decoration: line-through; }
+.fixed-total { padding: 10px 15px 4px; display: flex; justify-content: space-between; align-items: center; margin-top: 4px; border-top: 1px solid var(--border); }
+.fixed-total .ft-lbl { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); }
+.fixed-total .ft-val { font-size: 0.92rem; font-weight: 700; color: var(--red); }
 .manage-btn { margin: 0 22px 10px; background: var(--surface); border: 1px dashed var(--border); border-radius: 12px; padding: 13px; color: var(--muted); font-size: 0.88rem; font-weight: 500; text-align: center; cursor: pointer; }
+.manage-btn-primary { margin: 0 22px 10px; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 13px; color: var(--text); font-size: 0.88rem; font-weight: 600; text-align: center; cursor: pointer; }
+.tab-row { display: flex; gap: 6px; margin-bottom: 16px; }
+.tab-btn { flex: 1; padding: 9px 4px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface2); color: var(--muted); font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+.tab-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
+.bank-preview-list { max-height: 260px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+.bank-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 4px; border-bottom: 1px solid var(--border); font-size: 0.82rem; gap: 8px; }
+.bank-row:last-child { border-bottom: none; }
+.bank-row-desc { flex: 1; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bank-row-val.credit { color: var(--green); font-weight: 700; flex-shrink: 0; }
+.bank-row-val.debit { color: var(--red); font-weight: 700; flex-shrink: 0; }
+.bank-summary { background: var(--surface2); border-radius: 12px; padding: 12px 14px; display: flex; justify-content: space-between; margin-bottom: 14px; font-size: 0.85rem; }
+.bank-summary span { font-weight: 600; }
+.bank-confirm-btn { width: 100%; background: var(--accent); color: #000; border: none; border-radius: 12px; padding: 14px; font-family: 'Inter',sans-serif; font-weight: 700; font-size: 1rem; cursor: pointer; margin-bottom: 8px; }
 
 .export-row { display: flex; gap: 8px; margin: 0 22px 22px; }
 .export-btn { flex: 1; background: var(--surface); border: 1px dashed var(--border); border-radius: 12px; padding: 13px; color: var(--muted); font-size: 0.88rem; font-weight: 500; text-align: center; cursor: pointer; font-family: 'Inter', sans-serif; }
@@ -409,7 +425,23 @@ body.theme-gradient .cat-item:hover { background: rgba(255,255,255,0.1); }
 </div>
 <div class="manage-btn" id="toggleFixedBtn" onclick="toggleFixedList()">👁 Veja os gastos fixos</div>
 <div class="fixed-list" id="fixedTags" style="display:none"></div>
-<div class="manage-btn" onclick="openFixedModal()">⚙ Gerenciar gastos fixos</div>
+<div class="divider"></div>
+<div class="sec-label-row">
+  <span class="lbl">Dinheiro que Emprestei</span>
+  <span class="hint">a receber</span>
+</div>
+<div class="manage-btn" id="toggleEmpresteiBtn" onclick="toggleEmpresteiList()">👁 Veja o que emprestei</div>
+<div class="fixed-list" id="empresteiTags" style="display:none"></div>
+
+<div class="divider"></div>
+<div class="sec-label-row">
+  <span class="lbl">Dinheiro que Peguei Emprestado</span>
+  <span class="hint">a pagar</span>
+</div>
+<div class="manage-btn" id="togglePegueiBtn" onclick="togglePegueiList()">👁 Veja o que peguei</div>
+<div class="fixed-list" id="pegueiTags" style="display:none"></div>
+
+<div class="manage-btn-primary" onclick="openGerenciarModal()">⚙ Gerenciar</div>
 
 <div class="divider"></div>
 <div style="height:8px"></div>
@@ -419,8 +451,22 @@ body.theme-gradient .cat-item:hover { background: rgba(255,255,255,0.1); }
 <!-- IMPORTAR / EXPORTAR — agora no fim, depois de Movimentações -->
 <div style="height:18px"></div>
 <div class="export-row">
-  <div class="export-btn" onclick="exportData()">⬇ Exportar dados</div>
-  <label class="export-btn">⬆ Importar<input type="file" accept=".json" onchange="importData(event)" style="display:none"></label>
+  <div class="export-btn" onclick="exportData()">⬇Exportar</div>
+  <label class="export-btn">⬆ Importar JSON<input type="file" accept=".json" onchange="importData(event)" style="display:none"></label>
+  <label class="export-btn" style="color:var(--accent);border-color:var(--accent)">🏦 Extrato<input type="file" accept=".csv,.ofx,.OFX" onchange="importBankFile(event)" style="display:none"></label>
+</div>
+
+<div class="modal-overlay" id="bankImportModal" style="display:none" onclick="closeBankImportOutside(event)">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 class="accent">Importar Extrato</h2>
+      <div class="modal-close" onclick="closeBankImportModal()">×</div>
+    </div>
+    <div class="bank-summary" id="bankSummary"></div>
+    <div class="bank-preview-list" id="bankPreviewList"></div>
+    <button class="bank-confirm-btn" onclick="confirmBankImport()">Confirmar importação</button>
+    <button class="btn-close" onclick="closeBankImportModal()">Cancelar</button>
+  </div>
 </div>
 
 <div class="modal-overlay" id="txModal" style="display:none" onclick="closeTxOutside(event)">
@@ -437,16 +483,39 @@ body.theme-gradient .cat-item:hover { background: rgba(255,255,255,0.1); }
   </div>
 </div>
 
-<div class="modal-overlay" id="fixedModal" style="display:none" onclick="closeFixedOutside(event)">
+<div class="modal-overlay" id="gerenciarModal" style="display:none" onclick="closeGerenciarOutside(event)">
   <div class="modal">
-    <div class="modal-head"><h2>Gastos Fixos</h2><div class="modal-close" onclick="closeFixedModal()">×</div></div>
-    <div class="modal-row">
-      <input type="text" id="fixedDescIn" placeholder="Ex: Aluguel, Internet..." />
-      <input type="number" id="fixedValIn" placeholder="R$" inputmode="decimal" style="max-width:90px" />
-      <button class="btn-add" onclick="addFixed()" style="padding:13px 14px">+</button>
+    <div class="modal-head"><h2>Gerenciar</h2><div class="modal-close" onclick="closeGerenciarModal()">×</div></div>
+    <div class="tab-row">
+      <button class="tab-btn active" id="tab-fixed" onclick="switchTab('fixed')">Gastos Fixos</button>
+      <button class="tab-btn" id="tab-emprestei" onclick="switchTab('emprestei')">Emprestei</button>
+      <button class="tab-btn" id="tab-peguei" onclick="switchTab('peguei')">Peguei</button>
     </div>
-    <div class="modal-list" id="fixedModalList"></div>
-    <button class="btn-close" onclick="closeFixedModal()">Fechar</button>
+    <div id="tabContent-fixed">
+      <div class="modal-row">
+        <input type="text" id="fixedDescIn" placeholder="Ex: Aluguel, Internet..." />
+        <input type="number" id="fixedValIn" placeholder="R$" inputmode="decimal" style="max-width:90px" />
+        <button class="btn-add" onclick="addFixed()" style="padding:13px 14px">+</button>
+      </div>
+      <div class="modal-list" id="fixedModalList"></div>
+    </div>
+    <div id="tabContent-emprestei" style="display:none">
+      <div class="modal-row">
+        <input type="text" id="empresteiDescIn" placeholder="Ex: João, amigo..." />
+        <input type="number" id="empresteiValIn" placeholder="R$" inputmode="decimal" style="max-width:90px" />
+        <button class="btn-add" onclick="addEmprestei()" style="padding:13px 14px">+</button>
+      </div>
+      <div class="modal-list" id="empresteiModalList"></div>
+    </div>
+    <div id="tabContent-peguei" style="display:none">
+      <div class="modal-row">
+        <input type="text" id="pegueiDescIn" placeholder="Ex: João, banco..." />
+        <input type="number" id="pegueiValIn" placeholder="R$" inputmode="decimal" style="max-width:90px" />
+        <button class="btn-add" onclick="addPeguei()" style="padding:13px 14px">+</button>
+      </div>
+      <div class="modal-list" id="pegueiModalList"></div>
+    </div>
+    <button class="btn-close" onclick="closeGerenciarModal()">Fechar</button>
   </div>
 </div>
 
@@ -619,6 +688,148 @@ async function loadFixedFromSupabase() {
   renderFixedTags();
 }
 
+// ───────── EMPRÉSTIMOS ─────────
+const getEmprestei = () => LS('fin_emprestei', []);
+const saveEmprestei = v => LSSet('fin_emprestei', v);
+const getPeguei = () => LS('fin_peguei', []);
+const savePeguei = v => LSSet('fin_peguei', v);
+
+async function insertEmprestimoToSupabase(tipo, item) {
+  const { data: { session } } = await sb.auth.getSession();
+  const uid = session?.user?.id || (currentUser && currentUser.id);
+  if (!uid) return null;
+  const { data, error } = await sb.from('emprestimos')
+    .insert({ user_id: uid, tipo, descricao: item.desc, valor: item.val })
+    .select().single();
+  if (error) { console.error('Erro ao inserir empréstimo:', error.message); return null; }
+  return data?.id ?? null;
+}
+
+async function deleteEmprestimoFromSupabase(sbid) {
+  if (!currentUser || !sbid) return;
+  const { error } = await sb.from('emprestimos')
+    .delete().eq('user_id', currentUser.id).eq('id', sbid);
+  if (error) console.error('Erro ao deletar empréstimo:', error.message);
+}
+
+async function loadEmprestimosFromSupabase() {
+  if (!currentUser) return;
+  const { data, error } = await sb.from('emprestimos')
+    .select('*').eq('user_id', currentUser.id);
+  if (error || !data) return;
+  saveEmprestei(data.filter(r => r.tipo === 'emprestei').map(r => ({ desc: r.descricao, val: parseFloat(r.valor), sbid: r.id })));
+  savePeguei(data.filter(r => r.tipo === 'peguei').map(r => ({ desc: r.descricao, val: parseFloat(r.valor), sbid: r.id })));
+  renderEmpresteiTags();
+  renderPegueiTags();
+}
+
+function toggleEmpresteiList() {
+  const list = document.getElementById('empresteiTags');
+  const btn = document.getElementById('toggleEmpresteiBtn');
+  const isHidden = list.style.display === 'none';
+  if (isHidden) { renderEmpresteiTags(); list.style.display = 'flex'; btn.textContent = '🙈 Esconder o que emprestei'; }
+  else { list.style.display = 'none'; btn.textContent = '👁 Veja o que emprestei'; }
+}
+
+function togglePegueiList() {
+  const list = document.getElementById('pegueiTags');
+  const btn = document.getElementById('togglePegueiBtn');
+  const isHidden = list.style.display === 'none';
+  if (isHidden) { renderPegueiTags(); list.style.display = 'flex'; btn.textContent = '🙈 Esconder o que peguei'; }
+  else { list.style.display = 'none'; btn.textContent = '👁 Veja o que peguei'; }
+}
+
+function renderEmpresteiTags() {
+  const arr = getEmprestei();
+  const el = document.getElementById('empresteiTags');
+  if (!arr.length) { el.innerHTML = '<div class="empty" style="padding:0 0 6px">Nenhum empréstimo dado ainda</div>'; return; }
+  const total = arr.reduce((s, f) => s + f.val, 0);
+  el.innerHTML = arr.map(f => `<div class="fixed-tag" style="cursor:default"><span class="fn">${f.desc}</span><span class="fv" style="color:var(--accent)">${fmt(f.val)}</span></div>`).join('')
+    + `<div class="fixed-total"><span class="ft-lbl">Total a receber</span><span class="ft-val" style="color:var(--accent)">${fmt(total)}</span></div>`;
+}
+
+function renderPegueiTags() {
+  const arr = getPeguei();
+  const el = document.getElementById('pegueiTags');
+  if (!arr.length) { el.innerHTML = '<div class="empty" style="padding:0 0 6px">Nenhum empréstimo recebido ainda</div>'; return; }
+  const total = arr.reduce((s, f) => s + f.val, 0);
+  el.innerHTML = arr.map(f => `<div class="fixed-tag" style="cursor:default"><span class="fn">${f.desc}</span><span class="fv">${fmt(f.val)}</span></div>`).join('')
+    + `<div class="fixed-total"><span class="ft-lbl">Total a pagar</span><span class="ft-val">${fmt(total)}</span></div>`;
+}
+
+function openEmpresteiModal() { openGerenciarModal('emprestei'); }
+function openPegueiModal() { openGerenciarModal('peguei'); }
+
+function renderEmpresteiModal() {
+  const arr = getEmprestei();
+  const el = document.getElementById('empresteiModalList');
+  if (!arr.length) { el.innerHTML = '<div class="empty" style="padding:10px">Nenhum empréstimo dado</div>'; return; }
+  el.innerHTML = arr.map((f, i) => `<div class="modal-fixed-item"><span>${f.desc}</span><div style="display:flex;align-items:center;gap:12px"><span style="color:var(--accent);font-weight:700">${fmt(f.val)}</span><button onclick="delEmprestei(${i})" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:1.1rem">×</button></div></div>`).join('');
+}
+
+function renderPegueiModal() {
+  const arr = getPeguei();
+  const el = document.getElementById('pegueiModalList');
+  if (!arr.length) { el.innerHTML = '<div class="empty" style="padding:10px">Nenhum empréstimo recebido</div>'; return; }
+  el.innerHTML = arr.map((f, i) => `<div class="modal-fixed-item"><span>${f.desc}</span><div style="display:flex;align-items:center;gap:12px"><span class="modal-fixed-val">${fmt(f.val)}</span><button onclick="delPeguei(${i})" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:1.1rem">×</button></div></div>`).join('');
+}
+
+async function addEmprestei() {
+  const desc = document.getElementById('empresteiDescIn').value.trim();
+  const val = parseFloat(document.getElementById('empresteiValIn').value);
+  if (!desc || isNaN(val) || val <= 0) return;
+  const arr = getEmprestei();
+  const novo = { desc, val, sbid: null };
+  arr.push(novo);
+  saveEmprestei(arr);
+  document.getElementById('empresteiDescIn').value = '';
+  document.getElementById('empresteiValIn').value = '';
+  renderEmpresteiModal(); renderEmpresteiTags();
+  const sbid = await insertEmprestimoToSupabase('emprestei', novo);
+  if (sbid) {
+    const cur = getEmprestei();
+    const i = cur.findIndex(f => f.desc === desc && f.val === val && !f.sbid);
+    if (i !== -1) { cur[i].sbid = sbid; saveEmprestei(cur); }
+  }
+}
+
+async function delEmprestei(idx) {
+  const arr = getEmprestei();
+  const f = arr[idx];
+  arr.splice(idx, 1);
+  saveEmprestei(arr);
+  renderEmpresteiModal(); renderEmpresteiTags();
+  if (f && f.sbid) deleteEmprestimoFromSupabase(f.sbid);
+}
+
+async function addPeguei() {
+  const desc = document.getElementById('pegueiDescIn').value.trim();
+  const val = parseFloat(document.getElementById('pegueiValIn').value);
+  if (!desc || isNaN(val) || val <= 0) return;
+  const arr = getPeguei();
+  const novo = { desc, val, sbid: null };
+  arr.push(novo);
+  savePeguei(arr);
+  document.getElementById('pegueiDescIn').value = '';
+  document.getElementById('pegueiValIn').value = '';
+  renderPegueiModal(); renderPegueiTags();
+  const sbid = await insertEmprestimoToSupabase('peguei', novo);
+  if (sbid) {
+    const cur = getPeguei();
+    const i = cur.findIndex(f => f.desc === desc && f.val === val && !f.sbid);
+    if (i !== -1) { cur[i].sbid = sbid; savePeguei(cur); }
+  }
+}
+
+async function delPeguei(idx) {
+  const arr = getPeguei();
+  const f = arr[idx];
+  arr.splice(idx, 1);
+  savePeguei(arr);
+  renderPegueiModal(); renderPegueiTags();
+  if (f && f.sbid) deleteEmprestimoFromSupabase(f.sbid);
+}
+
 function addItem() {
   const desc=document.getElementById('descInput').value.trim();
   const val=parseFloat(document.getElementById('valInput').value);
@@ -770,9 +981,23 @@ function renderTxModal() {
   }
 }
 
-function openFixedModal() { renderFixedModal(); document.getElementById('fixedModal').style.display='flex'; }
-function closeFixedModal() { document.getElementById('fixedModal').style.display='none'; }
-function closeFixedOutside(e) { if(e.target.id==='fixedModal') closeFixedModal(); }
+let _currentTab = 'fixed';
+function openGerenciarModal(tab) {
+  switchTab(tab || _currentTab);
+  document.getElementById('gerenciarModal').style.display = 'flex';
+}
+function closeGerenciarModal() { document.getElementById('gerenciarModal').style.display = 'none'; }
+function closeGerenciarOutside(e) { if (e.target.id === 'gerenciarModal') closeGerenciarModal(); }
+function switchTab(tab) {
+  _currentTab = tab;
+  ['fixed','emprestei','peguei'].forEach(t => {
+    document.getElementById('tabContent-'+t).style.display = t===tab ? 'block' : 'none';
+    document.getElementById('tab-'+t).classList.toggle('active', t===tab);
+  });
+  if (tab==='fixed') renderFixedModal();
+  if (tab==='emprestei') renderEmpresteiModal();
+  if (tab==='peguei') renderPegueiModal();
+}
 function renderFixedModal() {
   const arr=getFixed();
   const el=document.getElementById('fixedModalList');
@@ -784,7 +1009,9 @@ function renderFixedTags() {
   const arr=getFixed();
   const el=document.getElementById('fixedTags');
   if(!arr.length){el.innerHTML='<div class="empty" style="padding:0 0 6px">Nenhum fixo cadastrado ainda</div>';return;}
-  el.innerHTML=arr.map((f,i)=>`<div class="fixed-tag" onclick="launchFixed(${i})"><span class="fn">${f.desc}</span><span class="fv">${fmt(f.val)}</span></div>`).join('');
+  const total=arr.reduce((s,f)=>s+f.val,0);
+  el.innerHTML=arr.map((f,i)=>`<div class="fixed-tag" onclick="launchFixed(${i})"><span class="fn">${f.desc}</span><span class="fv">${fmt(f.val)}</span></div>`).join('')
+    +`<div class="fixed-total"><span class="ft-lbl">Total</span><span class="ft-val">${fmt(total)}</span></div>`;
 }
 
 function toggleFixedList() {
@@ -826,6 +1053,108 @@ function importData(e) {
     } catch { alert('Erro ao importar.'); }
   };
   reader.readAsText(file); e.target.value='';
+}
+
+// ───────── IMPORTAÇÃO DE EXTRATO BANCÁRIO ─────────
+let _bankPendingItems = [];
+
+function importBankFile(e) {
+  const file = e.target.files[0]; if (!file) return;
+  e.target.value = '';
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    const text = ev.target.result;
+    const ext = file.name.toLowerCase();
+    try {
+      const items = ext.endsWith('.ofx') ? parseOFX(text) : parseCSV(text);
+      if (!items.length) { alert('Nenhuma transação encontrada no arquivo.'); return; }
+      _bankPendingItems = items;
+      showBankPreview(items);
+    } catch(err) {
+      alert('Erro ao ler o arquivo: ' + err.message);
+    }
+  };
+  reader.readAsText(file, 'latin1');
+}
+
+function parseOFX(text) {
+  const items = [];
+  const stmtRe = /<STMTTRN>([\s\S]*?)<\/STMTTRN>/gi;
+  let m;
+  while ((m = stmtRe.exec(text)) !== null) {
+    const block = m[1];
+    const trntype = (/<TRNTYPE>([^<\r\n]+)/.exec(block)?.[1] || '').trim();
+    const amtStr = (/<TRNAMT>([^<\r\n]+)/.exec(block)?.[1] || '').trim().replace(',','.');
+    const memo = (/<MEMO>([^<\r\n]+)/.exec(block)?.[1] || (/<NAME>([^<\r\n]+)/.exec(block)?.[1]) || '').trim();
+    const dtpost = (/<DTPOSTED>([^<\r\n]+)/.exec(block)?.[1] || '').trim().slice(0,8);
+    const amt = parseFloat(amtStr);
+    if (isNaN(amt) || amt === 0) continue;
+    let dateStr = '';
+    if (dtpost.length === 8) {
+      dateStr = dtpost.slice(6,8)+'/'+dtpost.slice(4,6)+'/'+dtpost.slice(0,4);
+    }
+    items.push({ type: amt > 0 ? 'income' : 'expense', desc: memo || trntype, val: Math.abs(amt), date: dateStr });
+  }
+  return items;
+}
+
+function parseCSV(text) {
+  const items = [];
+  const lines = text.split(/\r?\n/).filter(l => l.trim());
+  if (lines.length < 2) return items;
+  const sep = lines[0].includes(';') ? ';' : ',';
+  const header = lines[0].split(sep).map(h => h.trim().toLowerCase().replace(/"/g,''));
+  const colIdx = name => header.findIndex(h => h.includes(name));
+  const descIdx = colIdx('hist') !== -1 ? colIdx('hist') : colIdx('desc') !== -1 ? colIdx('desc') : colIdx('memo') !== -1 ? colIdx('memo') : 1;
+  const valIdx = colIdx('valor') !== -1 ? colIdx('valor') : colIdx('amount') !== -1 ? colIdx('amount') : colIdx('crédito') !== -1 ? colIdx('crédito') : 2;
+  const dateIdx = colIdx('data') !== -1 ? colIdx('data') : colIdx('date') !== -1 ? colIdx('date') : 0;
+  for (let i = 1; i < lines.length; i++) {
+    const cols = lines[i].split(sep).map(c => c.trim().replace(/"/g,''));
+    if (cols.length < 2) continue;
+    const desc = cols[descIdx] || '';
+    const rawVal = (cols[valIdx] || '').replace(/\./g,'').replace(',','.');
+    const amt = parseFloat(rawVal);
+    if (!desc || isNaN(amt) || amt === 0) continue;
+    const rawDate = cols[dateIdx] || '';
+    items.push({ type: amt > 0 ? 'income' : 'expense', desc, val: Math.abs(amt), date: rawDate });
+  }
+  return items;
+}
+
+function showBankPreview(items) {
+  const credits = items.filter(i => i.type === 'income');
+  const debits = items.filter(i => i.type === 'expense');
+  document.getElementById('bankSummary').innerHTML =
+    `<span style="color:var(--green)">↑ ${credits.length} entradas</span><span style="color:var(--red)">↓ ${debits.length} saídas</span><span style="color:var(--muted)">${items.length} total</span>`;
+  document.getElementById('bankPreviewList').innerHTML = items.slice(0,50).map(i =>
+    `<div class="bank-row"><span class="bank-row-desc">${i.desc}${i.date?' · '+i.date:''}</span><span class="bank-row-val ${i.type==='income'?'credit':'debit'}">${i.type==='income'?'+':'-'} ${fmt(i.val)}</span></div>`
+  ).join('') + (items.length > 50 ? `<div style="text-align:center;font-size:0.78rem;color:var(--muted);padding:6px">... e mais ${items.length-50} transações</div>` : '');
+  document.getElementById('bankImportModal').style.display = 'flex';
+}
+
+function closeBankImportModal() { document.getElementById('bankImportModal').style.display = 'none'; _bankPendingItems = []; }
+function closeBankImportOutside(e) { if (e.target.id === 'bankImportModal') closeBankImportModal(); }
+
+async function confirmBankImport() {
+  if (!_bankPendingItems.length) return;
+  const items = getItems();
+  const today = new Date().toLocaleDateString('pt-BR');
+  for (const bi of _bankPendingItems) {
+    const localId = Date.now() + Math.random();
+    const newItem = { id: localId, type: bi.type, desc: bi.desc, val: bi.val, cat: 'Importado', date: bi.date || today, plannedDate: '' };
+    items.unshift(newItem);
+    saveItems(items);
+    const sbid = await insertToSupabase(newItem);
+    if (sbid) {
+      const cur = getItems();
+      const idx = cur.findIndex(i => i.id === localId);
+      if (idx !== -1) { cur[idx].sbid = sbid; saveItems(cur); }
+    }
+  }
+  render();
+  closeBankImportModal();
+  alert(`${_bankPendingItems.length} transações importadas com sucesso!`);
+  _bankPendingItems = [];
 }
 
 function render() {
@@ -999,6 +1328,7 @@ async function setUserSession(user) {
   }
   loadFromSupabase();
   loadFixedFromSupabase();
+  loadEmprestimosFromSupabase();
 }
 
 async function initAuth() {
@@ -1018,6 +1348,7 @@ async function initAuth() {
     }
     loadFromSupabase();
     loadFixedFromSupabase();
+    loadEmprestimosFromSupabase();
   } else {
     document.getElementById('loginScreen').style.display = 'flex';
   }
