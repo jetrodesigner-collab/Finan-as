@@ -1,0 +1,29 @@
+name: Supabase Keep Alive
+
+on:
+  schedule:
+    - cron: '0 8 */3 * *'  # a cada 3 dias, às 8h UTC
+  workflow_dispatch:        # permite rodar manualmente pelo GitHub
+
+jobs:
+  ping:
+    name: Ping Supabase
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Consultar tabela perfil
+        run: |
+          HTTP_STATUS=$(curl --silent --output /tmp/response.json --write-out "%{http_code}" \
+            "${{ secrets.SUPABASE_URL }}/rest/v1/perfil?select=id&limit=1" \
+            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}")
+
+          echo "HTTP status: $HTTP_STATUS"
+          echo "Response: $(cat /tmp/response.json)"
+
+          if [ "$HTTP_STATUS" -lt 200 ] || [ "$HTTP_STATUS" -ge 300 ]; then
+            echo "Falha: Supabase retornou status $HTTP_STATUS"
+            exit 1
+          fi
+
+          echo "Supabase ativo e respondendo corretamente."
